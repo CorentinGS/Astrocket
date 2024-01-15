@@ -4,8 +4,6 @@ let pbURI = 'http://localhost:8090';
 
 if (process.env.NODE_ENV === 'production') {
     pbURI = "https://pocketbase.corentings.dev";
-} else if (process.env.NODE_ENV === 'docker') {
-    pbURI = "http://localhost:8090"
 } else {
     pbURI = "http://localhost:8090"
 }

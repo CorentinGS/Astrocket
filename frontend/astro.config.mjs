@@ -5,7 +5,6 @@ import solidJs from "@astrojs/solid-js";
 import node from '@astrojs/node';
 
 // https://astro.build/config
-import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 import sitemap from "@astrojs/sitemap";
@@ -15,24 +14,13 @@ import compress from "astro-compress";
 
 // https://astro.build/config
 
-let adapter;
-
-if (process.env.NODE_ENV === 'production') {
-  adapter = vercel({
-    functionPerRoute: false,
-    imageService: true
-  });
-} else if (process.env.NODE_ENV === 'docker') {
-  adapter = node({
-    mode: 'standalone',
-  });
-}
 export default defineConfig({
   site: "https://astrocket.corentings.dev",
   integrations: [tailwind(), solidJs(), sitemap(), compress({
-    path: ".vercel/output/static",
     css: false
   })],
   output: "server",
-  adapter: adapter
+  adapter: node({
+    mode: 'standalone',
+  })
 });
