@@ -1,0 +1,15 @@
+---
+import Logo from "./Logo.astro";
+import Avatar from "./Avatar.tsx";
+---
+
+<section class="navbar md:px-5">
+  <div class="navbar-start">
+    <a class="" href={"/"} rel="prefetch">
+      <Logo />
+    </a>
+  </div>
+  <div class="navbar-end">
+    <Avatar client:visible />
+  </div>
+</section>

@@ -1,0 +1,70 @@
+---
+import { Icon } from "astro-iconify";
+
+const items = [
+  [
+    {
+      title: "Bleeding Edge Technology",
+      description:
+        "All the latest technologies are used to build this app. Tailwind CSS, TypeScript, Astro, Solid, and more.",
+      icon: "subway:world",
+    },
+    {
+      title: "Blazing Fast",
+      description:
+        "Super fast page load times and fast interactivity. The app is built with Astro, a framework that is optimized for speed.",
+      icon: "ion:rocket-sharp",
+    },
+  ],
+  [
+    {
+      title: "Open Source",
+      description:
+        "The app is open source and free to use. You can use it for your own projects or contribute to the project.",
+      icon: "ri:open-source-fill",
+    },
+    {
+      title: "Lightweight",
+      description:
+        "The app is lightweight and doesn't use any bloated frameworks. It's just a few files and a few dependencies.",
+      icon: "lucide:feather",
+    },
+  ],
+];
+---
+
+<section class="scroll-mt-16" id="features">
+  <div class="px-4 py-16 mx-auto max-w-6xl lg:px-8 lg:py-20">
+    <div class="mb-10 md:mx-auto sm:text-center md:mb-12 max-w-3xl">
+      <p class="text-base text-primary font-semibold tracking-wide uppercase">
+        Features
+      </p>
+      <h2
+        class="text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading"
+      >
+        What you get with our app
+      </h2>
+    </div>
+    <div class="grid mx-auto space-y-6 md:grid-cols-2 md:space-y-0">
+      {
+        items.map((subitems) => (
+          <div class="space-y-8 sm:px-8">
+            {subitems.map(({ title, description, icon }) => (
+              <div class="flex flex-row max-w-md">
+                <div class="mb-4 mr-4">
+                  <div class="flex items-center justify-center w-12 h-12 rounded-full">
+                    {<Icon name={icon} />}
+                  </div>
+                </div>
+                <div>
+                  <h3 class="mb-3 text-xl font-bold">{title}</h3>
+                  <p class="">{description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

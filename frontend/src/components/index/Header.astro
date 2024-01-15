@@ -2,20 +2,25 @@
 import Logo from "./Logo.astro";
 ---
 
-<div class="sticky top-0 z-40 navbar md:px-5 transition-all">
-  <div class="navbar-start">
-    <a class="" href={"/"} rel="prefecth">
-      <Logo />
-    </a>
-  </div>
-  <div class="navbar-end">
-    <a
-      href={"/login"}
-      aria-label="login"
-      class="ml-3 btn btn-primary h-10 px-5 shadow-none text-base"
-      rel="prefetch"
-    >
-      Login
-    </a>
-  </div>
-</div>
+<header class="sticky top-0 z-40 bg-base-100">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <div class="flex lg:flex-1">
+      <a href={"/"} class="-m-1.5 p-1.5 flex hoveranimation text-xl normal-case lg:text-3xl"
+         data-astro-prefetch="hover">
+        <Logo class="w-8 h-8 mr-2"/>
+      </a>
+    </div>
+    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+      <a
+          href={"/login"}
+          aria-label="login"
+          class="ml-3 btn btn-primary h-10 px-5 shadow-none text-base"
+          rel="prefetch"
+      >
+        Login
+      </a>
+    </div>
+  </nav>
+  <!-- Main modal -->
+  <!-- Mobile menu, show/hide based on menu open state. -->
+</header>

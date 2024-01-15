@@ -1,0 +1,56 @@
+---
+import { Icon } from "astro-iconify";
+const social = [
+  {
+    label: "Twitter",
+    icon: "lucide:twitter",
+    href: "https://corentings.vercel.app/links/",
+  },
+  {
+    label: "Discord",
+    icon: "ic:outline-discord",
+    href: "https://corentings.vercel.app/discord/",
+  },
+  {
+    label: "Github",
+    icon: "lucide:github",
+    href: "https://github.com/corentings",
+  },
+];
+---
+
+<footer class="border-t border-base-100 bg-base-200">
+  <div
+    class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col"
+  >
+    <p
+      class="text-sm sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-base-content sm:py-2 sm:mt-0 mt-4"
+    >
+      © 2023 Kafejo —
+      <a
+        href="https://corentings.vercel.app/discord/"
+        class="text-accent ml-1"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        @GSCorentin
+      </a>
+    </p>
+    <span
+      class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start"
+    >
+      {
+        social.map(({ label, href, icon }) => (
+          <a
+            class="hover:bg-base-100 focus:outline-none focus:ring-4 focus:ring-secondary rounded-lg text-sm p-2.5 inline-flex items-center"
+            aria-label={label}
+            title={label}
+            href={href}
+          >
+            <Icon class="w-5 h-5" name={icon} />
+          </a>
+        ))
+      }
+    </span>
+  </div>
+</footer>

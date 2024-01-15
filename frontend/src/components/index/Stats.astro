@@ -1,0 +1,61 @@
+---
+import { Icon } from "astro-iconify";
+
+const items = [
+  {
+    icon: "lucide:download-cloud",
+    title: "2.7K",
+    subtitle: "Downloads",
+  },
+  {
+    icon: "lucide:star",
+    title: "4.8K",
+    subtitle: "Stars",
+  },
+  {
+    icon: "lucide:users",
+    title: "3.2K",
+    subtitle: "Followers",
+  },
+  {
+    icon: "lucide:message-circle",
+    title: "1.2K",
+    subtitle: "Comments",
+  },
+];
+---
+
+<section
+  class="px-4 py-8 md:py-16 sm:px-6 mx-auto md:px-24 lg:px-8 lg:py-20 max-w-6xl"
+>
+  <div class="container px-5 py-24 mx-auto">
+    <div class="flex flex-col text-center w-full mb-20">
+      <p class="text-base text-primary font-semibold tracking-wide uppercase">
+        Stats
+      </p>
+      <h2
+        class="text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading"
+      >
+        Discover our stats
+      </h2>
+    </div>
+    <div class="flex flex-wrap -m-4 text-center">
+      {
+        items.map(({ title, subtitle, icon }) => (
+          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div class="px-4 py-6 rounded-lg">
+              <Icon
+                name={icon}
+                class="text-secondary w-12 h-12 mb-3 inline-block"
+              />
+              <h2 class="title-font font-medium text-3xl text-white">
+                {title}
+              </h2>
+              <p class="leading-relaxed">{subtitle}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
