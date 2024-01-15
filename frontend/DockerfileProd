@@ -1,5 +1,5 @@
 # Stage 1: Build the project
-FROM node:lts-alpine AS build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN yarn build
 # remove development dependencies
 RUN rm -rf node_modules
 
-FROM node:lts-alpine AS dep
+FROM node:20-alpine AS dep
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ RUN yarn add sharp --ignore-engines
 
 
 # Stage 2: Use Google Distroless as production image
-FROM gcr.io/distroless/nodejs18:nonroot AS production
+FROM gcr.io/distroless/nodejs20:nonroot AS production
 
 WORKDIR /app
 
