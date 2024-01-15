@@ -78,8 +78,8 @@ export default function Login() {
             <div class="flex justify-center items-center p-4">
               <p class=" text-sm text-center">
                 Don't have an account?{" "}
-                <a href="#" class="text-secondary transition duration-100">
-                  Register on our discord
+                <a href="https://corentings.dev" class="text-secondary transition duration-100">
+                  Contact me
                 </a>
               </p>
             </div>

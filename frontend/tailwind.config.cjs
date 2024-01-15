@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   jit: true,
@@ -9,23 +12,8 @@ module.exports = {
           'Syne',
           'Nunito',
           'system-ui',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          '"Segoe UI"',
-          'Roboto',
-          '"Helvetica Neue"',
-          'Arial',
-          '"Noto Sans"',
           'sans-serif',
-          '"Apple Color Emoji"',
-          '"Segoe UI Emoji"',
-          '"Segoe UI Symbol"',
-          '"Noto Color Emoji"',
         ],
-      },
-      animation: {
-        // Bounces 5 times 1s equals 5 seconds
-        'bounce-short': 'bounce 3s ease-in-out 2',
       },
     },
   },
@@ -36,7 +24,6 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
-    require('@tailwindcss/line-clamp'),
     require('@tailwindcss/aspect-ratio'),
     require('daisyui'),
   ],
