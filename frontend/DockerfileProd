@@ -21,6 +21,9 @@ RUN rm -rf node_modules
 
 FROM node:20-alpine AS dep
 
+LABEL org.opencontainers.image.source=https://github.com/corentings/Astrocket
+LABEL description="Production stage for Astrocket frontend."
+
 WORKDIR /app
 
 COPY package.json yarn.lock ./
