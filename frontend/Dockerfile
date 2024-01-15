@@ -48,4 +48,4 @@ ENV NODE_ENV=dev
 USER nonroot
 
 EXPOSE 4321
-CMD node ./dist/server/entry.mjs
+CMD ["node", "./dist/server/entry.mjs"]

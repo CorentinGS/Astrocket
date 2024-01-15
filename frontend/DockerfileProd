@@ -43,9 +43,9 @@ COPY --from=dep  /app/node_modules ./node_modules
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
-ENV NODE_ENV=production
+ENV NODE_ENV=dev
 
 USER nonroot
 
 EXPOSE 4321
-CMD node ./dist/server/entry.mjs
+CMD ["node", "./dist/server/entry.mjs"]
