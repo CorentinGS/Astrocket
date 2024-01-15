@@ -1,0 +1,31 @@
+version: "3.1"
+
+services:
+  backend:
+    container_name: pocketbase
+    restart: unless-stopped
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./data:/pb/pb_data
+      - ./migrations:/pb/pb_migrations
+    networks:
+      - app
+  frontend:
+    container_name: frontend
+    restart: unless-stopped
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4321:4321"
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
+

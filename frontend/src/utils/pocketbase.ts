@@ -1,18 +1,18 @@
 import PocketBase from "pocketbase";
 
-let pbURI = '';
+let pbURI = 'http://localhost:8090';
 
 if (process.env.NODE_ENV === 'production') {
-  pbURI = process.env.POCKETBASE_URI_PROD;
+    pbURI = "https://pocketbase.corentings.dev";
 } else if (process.env.NODE_ENV === 'docker') {
-  pbURI = process.env.POCKETBASE_URI_DOCKER;
+    pbURI = "http://localhost:8090"
 } else {
-  pbURI = process.env.RPOCKETBASE_URI_LOCAL;
+    pbURI = "http://localhost:8090"
 }
 export const pb = new PocketBase(pbURI);
 
 pb.authStore.onChange((auth) => {
-  // Store the auth in localStorage
-  localStorage.setItem("auth", JSON.stringify(pb.authStore.model));
-  localStorage.setItem("authID", <string>pb.authStore.model?.id);
+    // Store the auth in localStorage
+    localStorage.setItem("auth", JSON.stringify(pb.authStore.model));
+    localStorage.setItem("authID", <string>pb.authStore.model?.id);
 });

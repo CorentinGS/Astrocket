@@ -1,0 +1,12 @@
+---
+import Login from "../components/Login.tsx";
+import LayoutLogin from "../layouts/LayoutLogin.astro";
+
+const content = {
+  title: "Astrocket",
+};
+---
+
+<LayoutLogin title="Astrocket">
+  <Login client:idle />
+</LayoutLogin>
