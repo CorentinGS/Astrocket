@@ -18,7 +18,7 @@ export default defineConfig({
     path: ".vercel/output/static",
     css: false
   })],
-  output: "server",
+  output: "hybrid",
   adapter: vercel({
     functionPerRoute: false
   })
