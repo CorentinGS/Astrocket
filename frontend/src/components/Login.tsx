@@ -3,6 +3,7 @@
 import {createSignal, createEffect, onCleanup, lazy, onMount} from "solid-js";
 import {Icon} from "@iconify-icon/solid";
 import {pb} from "../utils/pocketbase";
+import * as buffer from "buffer";
 
 export default function Login() {
     const [username, setUsername] = createSignal("");
@@ -12,7 +13,56 @@ export default function Login() {
     const [loading, setLoading] = createSignal(false);
     const [success, setSuccess] = createSignal("");
 
+    const loginWithProvider = async (provider: string) => {
+        setLoading(true);
+        setError("");
+        setSuccess("");
 
+        try {
+            const authData = await pb.collection('users').authWithOAuth2({provider});
+            setSuccess("Login successful! Redirecting...");
+
+            let name = authData?.meta?.name ?? '';
+            let avatarUrl = authData?.meta?.avatarUrl ?? '';
+
+            let avatar;
+
+            try {
+                const response = await fetch(avatarUrl);
+                const blob = await response.blob();
+
+                const fileExtension = avatarUrl.split('.').pop();
+
+                avatar = new File([blob], `image.${fileExtension}`, {type: blob.type});
+            } catch (fetchError) {
+                console.error(`Failed to fetch avatar from URL: ${avatarUrl}`, fetchError);
+                // Handle the error as needed, e.g., set a default avatar
+                avatar = null;
+            }
+
+
+            await pb.collection('users').update(authData.record.id, {
+                name,
+                avatar
+            });
+
+            setTimeout(() => {
+                window.location.href = "/room";
+            }, 1000);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const loginDiscord = async () => {
+        await loginWithProvider('discord');
+    }
+
+    const loginGithub = async () => {
+        await loginWithProvider('github');
+    }
     const login = async () => {
         if (!username() || !password()) {
             setError("Username and password are required");
@@ -107,9 +157,23 @@ export default function Login() {
                             </div>
 
                             <button
+                                onClick={loginGithub}
+                                disabled={loading()}
+
                                 class="flex justify-center items-center btn btn-accent transition duration-100 gap-2 px-8 py-3">
+
                                 <Icon icon="lucide:github"/>
-                                Continue with github
+                                {loading() ? "Loading..." : "Continue with github"}
+                            </button>
+
+                            <button
+                                onClick={loginDiscord}
+                                disabled={loading()}
+
+                                class="flex justify-center items-center btn btn-accent transition duration-100 gap-2 px-8 py-3">
+
+                                <Icon icon="ic:baseline-discord"/>
+                                {loading() ? "Loading..." : "Continue with Discord"}
                             </button>
                         </div>
 

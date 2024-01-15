@@ -1,5 +1,5 @@
 import PocketBase from "pocketbase";
-export const pb = new PocketBase("http://0.0.0.0:8090"); // local
+export const pb = new PocketBase("http://localhost:8090"); // local
 // export const pb = new PocketBase("https://chat.memnix.app"); // production
 
 pb.authStore.onChange((auth) => {
