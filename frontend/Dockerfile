@@ -30,22 +30,13 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --production
 RUN yarn add sharp --ignore-engines
 
-
-# Stage 2: Use Google Distroless as production image
-FROM gcr.io/distroless/nodejs20:nonroot AS production
-
-WORKDIR /app
-
 # Copy the built project from the runtime stage
 COPY --from=build  /app .
-COPY --from=dep  /app/node_modules ./node_modules
-
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
 ENV NODE_ENV=dev
 
-USER nonroot
 
 EXPOSE 4321
 CMD ["node", "./dist/server/entry.mjs"]
