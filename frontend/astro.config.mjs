@@ -19,7 +19,8 @@ let adapter;
 
 if (process.env.NODE_ENV === 'production') {
   adapter = vercel({
-    functionPerRoute: false
+    functionPerRoute: false,
+    imageService: true
   });
 } else if (process.env.NODE_ENV === 'docker') {
   adapter = node({
@@ -27,6 +28,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 export default defineConfig({
+  site: "https://astrocket.corentings.dev",
   integrations: [tailwind(), solidJs(), sitemap(), compress({
     path: ".vercel/output/static",
     css: false
