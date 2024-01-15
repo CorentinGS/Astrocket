@@ -26,12 +26,24 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-# install dependencies
-RUN yarn install --frozen-lockfile --production
-RUN yarn add sharp --ignore-engines
+RUN yarn install --frozen-lockfile --production && \
+    yarn add sharp --ignore-engines && \
+    yarn cache clean
+
+
+RUN rm -rf /app/node_modules/typescript && \
+    rm -rf /app/node_modules/prettier && \
+    rm -rf /app/node_modules/@eslint && \
+    rm -rf /app/node_modules/shikiji && \
+    rm -rf /app/node_modules/@img && \
+    rm -rf /app/node_modules/astro && \
+    rm -rf /app/node_modules/@types/ \
+    rm -rf /app/node_modules/lightningcss-linux-x64-gnu && \
+    rm -rf /app/node_modules/lightningcss-linux-x64-musl
 
 # Copy the built project from the runtime stage
 COPY --from=build  /app .
+
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
