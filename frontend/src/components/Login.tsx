@@ -87,9 +87,12 @@ export default function Login() {
     };
 
     onMount(async () => {
-        const user = JSON.parse(localStorage.getItem("auth")?.toString() || "");
-        if (pb.authStore.isValid) {
-            window.location.href = "/room";
+        const authItem = localStorage.getItem("auth");
+        if (authItem && authItem !== "") {
+            const user = JSON.parse(authItem);
+            if (pb.authStore.isValid) {
+                window.location.href = "/room";
+            }
         }
     });
 
