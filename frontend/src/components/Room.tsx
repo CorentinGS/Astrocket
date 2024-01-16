@@ -216,8 +216,7 @@ export default function Room() {
         setText("");
 
         // Scroll the chat window to the bottom
-        const chat = document.getElementById("chat");
-        if (chat) chat.scrollTop = chat.scrollHeight;
+        scrollToBottom()
     };
 
     /**
