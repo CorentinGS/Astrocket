@@ -217,6 +217,15 @@ export default function Room() {
             <form class="form-control basis-2/10" onSubmit={handleSubmit}>
                 <div class="input-group w-full flex flex-row">
                     <TextareaAutosize
+                        onKeyPress={(ev) => {
+                            if (ev.key === "Enter" && !ev.shiftKey) {
+                                ev.preventDefault();
+                                sendMessage().catch(console.error);
+                            } else if (ev.key === "Enter" && ev.shiftKey) {
+                                ev.preventDefault();
+                                setText(text() + "\n");
+                            }
+                        }}
                         id="messageInput"
                         placeholder="Type your message"
                         class="input input-bordered w-[90%] min-h-[50px] resize-none"
