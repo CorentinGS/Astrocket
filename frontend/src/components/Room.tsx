@@ -90,12 +90,27 @@ export default function Room() {
         });
     });
 
+    const [isSending, setIsSending] = createSignal(false);
+
+
     const sendMessage = async () => {
+        if (isSending()) {
+            return;
+        }
+
+        setIsSending(true);
+
         const data = {
             content: text(),
             author: localStorage.getItem("authID"),
         };
-        await pb.collection("messages").create(data);
+
+        try {
+            await pb.collection("messages").create(data);
+        } finally {
+            setIsSending(false);
+        }
+
         setText("");
 
         // scroll to bottom
