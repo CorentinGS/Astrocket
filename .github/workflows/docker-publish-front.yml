@@ -7,7 +7,6 @@ name: DockerFrontend
 
 on:
   push:
-    branches: [ "master" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
 
@@ -15,7 +14,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}/frontend
+  IMAGE_NAME: ${{ github.repository }}-frontend
 
 
 jobs:
@@ -77,6 +76,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ steps.meta.outputs.tags }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
