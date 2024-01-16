@@ -2,6 +2,8 @@ FROM alpine:3.19 AS build
 
 ARG PB_VERSION=0.20.6
 
+ARG VERSION=prod
+
 RUN apk add --no-cache \
     unzip \
     ca-certificates \
