@@ -1,8 +1,7 @@
-version: "3.1"
+version: "3.8"
 
 services:
   backend:
-    container_name: pocketbase
     restart: unless-stopped
     build:
       context: backend
@@ -15,7 +14,6 @@ services:
     networks:
       - app
   frontend:
-    container_name: frontend
     restart: unless-stopped
     build:
       context: frontend
@@ -24,6 +22,13 @@ services:
       - "4321:4321"
     networks:
       - app
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:4321 || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 
 networks:
   app:

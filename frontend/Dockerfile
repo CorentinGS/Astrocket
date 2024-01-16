@@ -46,11 +46,9 @@ RUN rm -rf /app/node_modules/typescript && \
 # Copy the built project from the runtime stage
 COPY --from=build  /app .
 
-
 ENV HOST=0.0.0.0
 ENV PORT=4321
 ENV NODE_ENV=dev
-
 
 EXPOSE 4321
 CMD ["node", "./dist/server/entry.mjs"]
