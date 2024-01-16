@@ -106,7 +106,9 @@ export default function Room() {
             if (data.action === "create") {
                 // Fetch the data of the new message
                 const newMessage = await createMessageFromRecord(data.record);
+
                 // Add the new message to the `messages` state
+                // @ts-ignore
                 setMessages([...messages(), newMessage]);
                 // Scroll the chat window to the bottom
                 scrollToBottom();
