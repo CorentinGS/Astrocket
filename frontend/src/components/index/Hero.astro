@@ -52,11 +52,13 @@ import Hero from "../../assets/img/hero.jpg";
       <div class="relative m-auto max-w-4xl">
         <Picture
           src={Hero}
+          quality={50}
           formats={["avif", "webp", "png"]}
           class="mx-auto w-full rounded-md md:h-full drop-shadow-2xl"
           width={600}
           aspectRatio={16 / 9}
           alt="Qwind Hero Image (Cool dog)"
+          loading={'eager'}
         />
       </div>
     </div>
