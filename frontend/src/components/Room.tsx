@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 
 const Chat = lazy(() => import("./Chat"));
+import TextareaAutosize from "solid-textarea-autosize";
 
 import {pb} from "../utils/pocketbase";
 
@@ -93,7 +94,7 @@ export default function Room() {
                     avatar: url,
                 },
             };
-        }).reverse();
+        });
 
         // Set the `messages` state with the transformed data
         setMessages(messageList);
@@ -109,7 +110,7 @@ export default function Room() {
 
                 // Add the new message to the `messages` state
                 // @ts-ignore
-                setMessages([...messages(), newMessage]);
+                setMessages([newMessage, ...messages()]);
                 // Scroll the chat window to the bottom
                 scrollToBottom();
             }
@@ -169,7 +170,7 @@ export default function Room() {
      * @async
      */
     const sendMessage = async () => {
-        if (isSending()) return;
+        if (isSending() || text().trim() === '' || text().length > 400) return;
 
         setIsSending(true);
         const data = {content: text(), author: localStorage.getItem("authID")};
@@ -197,7 +198,7 @@ export default function Room() {
     return (
         <section class="py-2 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)]">
             <div
-                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10"
+                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse"
                 id="chat"
             >
                 <Suspense fallback={<div>Loading...</div>}>
@@ -214,14 +215,18 @@ export default function Room() {
                 </Suspense>
             </div>
             <form class="form-control basis-2/10" onSubmit={handleSubmit}>
-                <div class="input-group w-full">
-                    <input
+                <div class="input-group w-full flex flex-row">
+                    <TextareaAutosize
                         id="messageInput"
-                        type="text"
                         placeholder="Type your message"
-                        class="input input-bordered w-[90%]"
-                        onInput={(ev) => setText(ev.currentTarget.value)}
-                        value={text()}
+                        class="input input-bordered w-[90%] min-h-[50px] resize-none"
+                        onInput={(ev) => {
+                            let inputValue = ev.currentTarget.value;
+                            if (inputValue.length > 400) {
+                                inputValue = inputValue.slice(0, 400);
+                            }
+                            setText(inputValue);
+                        }} value={text()}
                     />
                     <button onClick={sendMessage} class="btn btn-ghost rounded-box">
                         <svg
@@ -242,6 +247,9 @@ export default function Room() {
                                 d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
                         </svg>
                     </button>
+                    <div
+                        class={`text-sm text-gray-500 ${text().length > 400 ? 'text-error' : ''}`}>{text().length}/400
+                    </div>
                 </div>
             </form>
         </section>

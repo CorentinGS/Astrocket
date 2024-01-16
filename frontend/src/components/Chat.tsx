@@ -19,7 +19,7 @@ export default function Chat(message: Message) {
                     />
                 </div>
             </div>
-            <div class="chat-bubble chat-bubble-neutral">{message.text}</div>
+            <div class="chat-bubble chat-bubble-neutral break-words">{message.text}</div>
             <div class="chat-footer opacity-50">
                 <time class="text-xs opacity-50">{message.createdAt}</time>
             </div>
