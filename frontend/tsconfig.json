@@ -8,6 +8,6 @@
     "types": ["astro/client"],
     "baseUrl": ".",
     "jsxImportSource": "solid-js",
-    "jsx": "react"
+    "jsx": "react-jsx"
   }
 }
