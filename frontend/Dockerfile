@@ -1,8 +1,6 @@
 # Stage 1: Build the project
 FROM node:20-alpine AS build
 
-ARG VERSION=dev
-
 WORKDIR /app
 
 ENV NODE_ENV=dev
