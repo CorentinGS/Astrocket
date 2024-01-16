@@ -1,18 +1,77 @@
 /** @jsxImportSource solid-js */
 
-import {createSignal, createEffect, onCleanup, lazy, onMount} from "solid-js";
+import {createSignal, createEffect, onCleanup, lazy, onMount, JSX} from "solid-js";
 import {Icon} from "@iconify-icon/solid";
 import {pb} from "../utils/pocketbase";
 import * as buffer from "buffer";
 
-export default function Login() {
+/**
+ * Login component
+ *
+ * This component handles user login functionality. It maintains several state variables
+ * for managing user input and providing feedback to the user.
+ *
+ * @returns {JSX.Element} The rendered chat room component.
+ */
+export default function Login(): JSX.Element {
+    /**
+     * `username` is state variables for the username and password input fields.
+     * `setUsername` is the functions for updating the state variables.
+     *
+     *  Initially, `username` is set to empty strings.
+     */
     const [username, setUsername] = createSignal("");
+
+
+    /**
+     * `password` is a state variable for the password input field.
+     * `setPassword` is the function to update the `password` state.
+     *
+     * Initially, `password` is set to an empty string.
+     */
     const [password, setPassword] = createSignal("");
+
+    /**
+     * `showPassword` is a state variable that determines the visibility of the password input field.
+     * `setShowPassword` is the function to update the `showPassword` state.
+     *
+     * Initially, `showPassword` is set to false.
+     */
     const [showPassword, setShowPassword] = createSignal(false);
+
+    /**
+     * `error` is a state variable for displaying error messages to the user.
+     * `setError` is the function to update the `error` state.
+     *
+     * Initially, `error` is set to an empty string.
+     */
     const [error, setError] = createSignal("");
+
+    /**
+     * `loading` is a state variable that indicates whether a login request is in progress.
+     * `setLoading` is the function to update the `loading` state.
+     *
+     * Initially, `loading` is set to false.
+     */
     const [loading, setLoading] = createSignal(false);
+
+    /**
+     * `success` is a state variable for displaying success messages to the user.
+     * `setSuccess` is the function to update the `success` state.
+     *
+     * Initially, `success` is set to an empty string.
+     */
     const [success, setSuccess] = createSignal("");
 
+
+    /**
+     * Asynchronously logs in a user with a specified provider.
+     *
+     * @async
+     * @function
+     * @param {string} provider - The provider to authenticate the user with.
+     * @throws Will throw an error if the authentication process fails.
+     */
     const loginWithProvider = async (provider: string) => {
         setLoading(true);
         setError("");
@@ -22,37 +81,37 @@ export default function Login() {
             const authData = await pb.collection('users').authWithOAuth2({provider});
             setSuccess("Login successful! Redirecting...");
 
-            let name = authData?.meta?.name ?? '';
-            let avatarUrl = authData?.meta?.avatarUrl ?? '';
+            const {name = '', avatarUrl = ''} = authData?.meta ?? {};
+            const avatar = await fetchAvatar(avatarUrl);
 
-            let avatar;
+            await pb.collection('users').update(authData.record.id, {name, avatar});
 
-            try {
-                const response = await fetch(avatarUrl);
-                const blob = await response.blob();
-
-                const fileExtension = avatarUrl.split('.').pop();
-
-                avatar = new File([blob], `image.${fileExtension}`, {type: blob.type});
-            } catch (fetchError) {
-                console.error(`Failed to fetch avatar from URL: ${avatarUrl}`, fetchError);
-                // Handle the error as needed, e.g., set a default avatar
-                avatar = null;
-            }
-
-
-            await pb.collection('users').update(authData.record.id, {
-                name,
-                avatar
-            });
-
-            setTimeout(() => {
-                window.location.href = "/room";
-            }, 1000);
+            setTimeout(() => window.location.href = "/room", 1000);
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
+        }
+    }
+
+    /**
+     * Asynchronously fetches an avatar image from a given URL and returns it as a File object.
+     *
+     * @async
+     * @function
+     * @param {string} avatarUrl - The URL of the avatar image to fetch.
+     * @returns {Promise<File|null>} The fetched avatar image as a File object, or null if an error occurred.
+     * @throws Will throw an error if the fetch or Blob conversion process fails.
+     */
+    const fetchAvatar = async (avatarUrl: string): Promise<File | null> => {
+        try {
+            const response = await fetch(avatarUrl);
+            const blob = await response.blob();
+            const fileExtension = avatarUrl.split('.').pop();
+            return new File([blob], `image.${fileExtension}`, {type: blob.type});
+        } catch (fetchError) {
+            console.error(`Failed to fetch avatar from URL: ${avatarUrl}`, fetchError);
+            return null;
         }
     }
 
@@ -63,6 +122,13 @@ export default function Login() {
     const loginGithub = async () => {
         await loginWithProvider('github');
     }
+
+    /**
+     * Asynchronously logs in a user with the provided username and password.
+     *
+     * @async
+     * @function
+     */
     const login = async () => {
         if (!username() || !password()) {
             setError("Username and password are required");
@@ -76,9 +142,7 @@ export default function Login() {
         try {
             await pb.collection("users").authWithPassword(username(), password());
             setSuccess("Login successful! Redirecting...");
-            setTimeout(() => {
-                window.location.href = "/room";
-            }, 2000);
+            setTimeout(() => window.location.href = "/room", 2000);
         } catch (err) {
             setError(err.message);
         } finally {
