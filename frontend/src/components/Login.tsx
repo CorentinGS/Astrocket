@@ -11,7 +11,7 @@ import * as buffer from "buffer";
  * This component handles user login functionality. It maintains several state variables
  * for managing user input and providing feedback to the user.
  *
- * @returns {JSX.Element} The rendered chat room component.
+ * @returns {JSX.Element} The rendered login component.
  */
 export default function Login(): JSX.Element {
     /**

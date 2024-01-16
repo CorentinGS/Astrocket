@@ -3,8 +3,6 @@
 
 import type {Message} from "./Room";
 
-// data is the props passed to the component
-
 export default function Chat(message: Message) {
     return (
         <div class="chat chat-start">
