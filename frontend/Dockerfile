@@ -43,8 +43,14 @@ RUN rm -rf /app/node_modules/typescript && \
     rm -rf /app/node_modules/lightningcss-linux-x64-gnu && \
     rm -rf /app/node_modules/lightningcss-linux-x64-musl
 
-# Copy the built project from the runtime stage
-COPY --from=build  /app .
+
+FROM node:20-alpine AS runtime
+
+WORKDIR /app
+
+# Copy the built project and production dependencies from previous stages
+COPY --from=build /app/dist ./dist
+COPY --from=dep /app/node_modules ./node_modules
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
