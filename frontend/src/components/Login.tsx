@@ -77,8 +77,18 @@ export default function Login(): JSX.Element {
         setError("");
         setSuccess("");
 
+
+        // Open a new window before calling the .authWithOAuth2() function to prevent the popup blocker from blocking the login popup.
+        // See https://github.com/pocketbase/pocketbase/discussions/2429#discussioncomment-5943061 for more details.
+        const newWindow = window.open("", "_blank");
+
         try {
-            const authData = await pb.collection('users').authWithOAuth2({provider});
+            const authData = await pb.collection('users').authWithOAuth2({
+                provider,
+                urlCallback: (url) => {
+                    newWindow.location.href = url;
+                },
+            });
             setSuccess("Login successful! Redirecting...");
 
             const {name = '', avatarUrl = ''} = authData?.meta ?? {};
