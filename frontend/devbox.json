@@ -1,15 +1,16 @@
 {
   "packages": [
-    "nodejs@18",
-    "yarn@1.22",
-    "nodePackages.sharp@0.33.2"
+    "nodejs@20",
+    "yarn@1.22"
   ],
   "shell": {
     "init_hook": [
       "yarn install"
     ],
     "scripts": {
-      "run_test": "yarn start"
+      "dev": "yarn dev",
+      "build": "yarn build",
+      "start": "yarn run serve"
     }
   }
 }
