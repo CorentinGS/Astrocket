@@ -53,16 +53,13 @@ export default function Avatar(): JSX.Element {
             </label>
             <ul
                 tabIndex={0}
-                class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-50"
             >
                 <li>
                     <a class="justify-between">
                         Profile
-                        <span class="badge">New</span>
+                        <span class="badge badge-ghost">Soon</span>
                     </a>
-                </li>
-                <li>
-                    <a>Settings</a>
                 </li>
                 <li>
                     <a onclick={logout}>Logout</a>

@@ -5,6 +5,7 @@ const { content } = Astro.props;
 
 // Helper imports
 import { seoConfig } from "../../utils/seoConfig";
+import Fonts from "../components/utils/Fonts.astro";
 
 // Props
 export interface Props {
@@ -38,6 +39,8 @@ const {
 
 <html lang="en">
   <head>
+    <Fonts/>
+
     <!-- Global meta tags. -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -9,8 +9,6 @@ import compress from "astro-compress";
 // https://astro.build/config
 import compressor from "astro-compressor";
 
-// https://astro.build/config
-import purgecss from "astro-purgecss";
 
 // https://astro.build/config
 import critters from "astro-critters";
