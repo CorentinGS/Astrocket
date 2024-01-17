@@ -155,7 +155,6 @@ export default function Room() {
                 setMessages([newMessage, ...messages()]);
                 // Scroll the chat window to the bottom
                 scrollToBottom();
-                // TODO: Check if the "Load More" button should be shown
             }
         })
 
