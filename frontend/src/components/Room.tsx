@@ -291,7 +291,12 @@ export default function Room(): JSX.Element {
                 id="chat"
             >
 
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={
+                    <div class="flex items-center justify-center h-full">
+                        <p class="text-base-content/50">Loading the messages...</p><span
+                        class="loading loading-dots loading-sm"></span>
+                    </div>
+                }>
                     {messages().length > 0 ? (
                         <>
                             {messages().map((message) => (
