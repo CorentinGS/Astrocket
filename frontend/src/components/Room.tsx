@@ -2,8 +2,6 @@
 
 import {
     createSignal,
-    createEffect,
-    onCleanup,
     lazy,
     onMount,
     Suspense, JSX,
