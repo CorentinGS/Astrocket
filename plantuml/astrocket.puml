@@ -7,7 +7,6 @@ LAYOUT_WITH_LEGEND()
 
 Person(user, "User", "Uses the application via a Web Browser")
 System_Ext(oauthProvider, "OAuth Provider", "External OAuth provider")
-System_Ext(github, "GitHub", "External provider of Docker images")
 
 System_Boundary(server, "Server") {
     Container(ssrApp, "SSR Application", "Server Side Rendered Application") {
@@ -16,11 +15,7 @@ System_Boundary(server, "Server") {
             Component(assets, "Assets", "Server Side Generated assets")
         }
     }
-    System_Boundary(pocketbase, "Pocketbase") {
-        Container(api, "API", "Golang", "Handles requests from the CSR components")
-        ContainerDb(db, "Database", "SQLite", "Stores application data")
-    }
-    System(docker, "Docker", "Pulls images for SSR application and API/Database from GitHub and performs rolling updates")
+    Container(api, "API", "Pocketbase", "Handles requests from the CSR components")
 }
 
 System_Boundary(browser, "Browser") {
@@ -32,17 +27,12 @@ System_Boundary(browser, "Browser") {
     }
 }
 
-
+ContainerDb(db, "Database", "Pocketbase", "Stores application data")
 
 Rel(user, browser, "Uses")
 Rel(browser, ssrApp, "Interacts with")
-Rel(ssrApp, csrComponents, "Serves and returns to Browser")
 Rel(csrComponents, api, "Interacts with")
 Rel(api, db, "Uses")
 Rel(api, oauthProvider, "Uses for login")
-
-Rel(docker, github, "Pulls images from")
-Rel(docker, ssrApp, "Performs rolling updates on")
-Rel(docker, api, "Performs rolling updates on")
 
 @enduml
