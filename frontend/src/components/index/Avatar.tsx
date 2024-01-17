@@ -44,8 +44,8 @@ export default function Avatar(): JSX.Element {
                 <div class="w-10 rounded-full">
                     <img
                         src={url()}
-                        alt="mock image"
-                        loading="lazy"
+                        alt="avatar image"
+                        loading="eager"
                         width="64"
                         height="64"
                     />
