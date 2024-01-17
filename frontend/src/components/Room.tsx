@@ -65,6 +65,48 @@ export default function Room() {
      */
     const [text, setText] = createSignal("");
 
+    const [page, setPage] = createSignal(1);
+
+    const [showLoadMore, setShowLoadMore] = createSignal(true);
+
+
+    const fetchMoreMessages = async () => {
+        // Increment the page
+        setPage(page() + 1);
+
+        // Fetch older messages from the server using pagination
+        const resultList = await pb.collection("messages").getList(page(), 50, {
+            sort: "-created",
+            expand: "author",
+        });
+
+
+        // Transform the fetched data into the format required by the application
+        const olderMessages = resultList.items.map(record => {
+            const user = record.expand.author;
+            const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
+            return {
+                id: record.id,
+                text: record.content,
+                createdAt: record.created,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    avatar: url,
+                },
+            };
+        });
+
+        // Append older messages to the current list
+        setMessages([...messages(), ...olderMessages]);
+
+
+        if (page() === resultList.totalPages) {
+            setShowLoadMore(false);
+        }
+
+    };
+
     /**
      * This function is called when the component is mounted.
      */
@@ -98,8 +140,7 @@ export default function Room() {
 
         // Set the `messages` state with the transformed data
         setMessages(messageList);
-        // Scroll the chat window to the bottom
-        scrollToBottom();
+
 
         // Subscribe to real-time updates of the messages
         await pb.realtime.subscribe("messages", async (data) => {
@@ -113,9 +154,12 @@ export default function Room() {
                 setMessages([newMessage, ...messages()]);
                 // Scroll the chat window to the bottom
                 scrollToBottom();
+                // TODO: Check if the "Load More" button should be shown
             }
         })
+
     });
+
 
     /**
      * `scrollToBottom` is a function that scrolls the chat window to the bottom.
@@ -208,12 +252,13 @@ export default function Room() {
                 class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
                 id="chat"
             >
+
                 <Suspense fallback={<div>Loading...</div>}>
                     {messages().length > 0 ? (
                         messages().map((message) => (
                             <>
                                 <Chat
-                                    id={message.id}
+                                    id={"message-" + message.id}
                                     user={message.user}
                                     text={message.text}
                                     createdAt={message.createdAt}
@@ -226,6 +271,14 @@ export default function Room() {
                         </div>
                     )}
                 </Suspense>
+
+                {showLoadMore() ? (
+
+                    <button onClick={fetchMoreMessages} class="btn btn-ghost rounded-box">
+                        Load More
+                    </button>) : null}
+
+
             </div>
             <form class="form-control basis-2/10" onSubmit={handleSubmit}>
                 <div class="input-group w-full flex flex-row">

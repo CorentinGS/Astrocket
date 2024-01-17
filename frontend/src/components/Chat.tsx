@@ -5,7 +5,7 @@ import type {Message} from "./Room";
 
 export default function Chat(message: Message) {
     return (
-        <div class="chat chat-start">
+        <div class="chat chat-start" id={message.id}>
             <div class="chat-header">{message.user.name}</div>
             <div class="chat-image avatar">
                 <div class="w-10 rounded-full">
