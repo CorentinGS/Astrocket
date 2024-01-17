@@ -21,7 +21,7 @@ export default defineConfig({
     integrations: [tailwind(), solidJs(), sitemap(), compress({
         css: false
     }), critters(), compressor(), AstroPWA({
-        mode: 'development',
+        mode: 'production',
         registerType: 'autoUpdate',
         scope: '/',
         base: '/',
