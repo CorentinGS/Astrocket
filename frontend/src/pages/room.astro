@@ -2,10 +2,9 @@
 import Room from "../components/Room.tsx";
 import LoginHeader from "../components/index/LoginHeader.astro";
 import RoomLayout from "../layouts/RoomLayout.astro";
-
 ---
 
 <RoomLayout title="Astrocket">
-  <LoginHeader />
-  <Room client:visible />
+    <LoginHeader/>
+    <Room client:only="solid-js"/>
 </RoomLayout>

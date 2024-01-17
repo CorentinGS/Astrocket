@@ -56,7 +56,6 @@ export default function Room() {
      */
     const [messages, setMessages] = createSignal([] as Message[]);
 
-
     /**
      * `text` is a state variable that holds the current text input in the chat box.
      * `setText` is the function to update the `text` state.
@@ -66,56 +65,135 @@ export default function Room() {
     const [text, setText] = createSignal("");
 
     /**
+     * `page` is a state variable that holds the current page number for pagination.
+     * `setPage` is the function to update the `page` state.
+     *
+     * Initially, `page` is set to 1, indicating the first page.
+     */
+    const [page, setPage] = createSignal(1);
+
+    /**
+     * `showLoadMore` is a state variable that indicates whether the "Load More" button should be displayed.
+     * `setShowLoadMore` is the function to update the `showLoadMore` state.
+     *
+     * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
+     */
+    const [showLoadMore, setShowLoadMore] = createSignal(true);
+
+    /**
+     * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
+     *
+     * @async
+     */
+    const fetchMoreMessages = async () => {
+        setPage(page() + 1);
+
+        const resultList = await pb.collection("messages").getList(page(), 50, {sort: "-created", expand: "author"});
+
+        const olderMessages = resultList.items.map(record => ({
+            id: record.id,
+            text: record.content,
+            createdAt: record.created,
+            user: {
+                id: record.expand.author.id,
+                name: record.expand.author.name,
+                avatar: pb.getFileUrl(record.expand.author, record.expand.author.avatar, {thumb: "64x64"}),
+            },
+        }));
+
+        setMessages([...messages(), ...olderMessages]);
+
+        if (page() === resultList.totalPages) {
+            setShowLoadMore(false);
+        }
+    };
+
+    let lastNotificationTime = 0;
+
+
+    /**
      * This function is called when the component is mounted.
      */
     onMount(async () => {
-        // Check if the user is authenticated
-        if (!pb.authStore.isValid || !localStorage.getItem("auth")) {
-            window.location.href = "/login";
-        }
-
-        // Fetch the list of messages from the server
-        const resultList = await pb.collection("messages").getList(1, 50, {
-            sort: "-created",
-            expand: "author",
-        });
-
-        // Transform the fetched data into the format required by the application
-        const messageList = resultList.items.map(record => {
-            const user = record.expand.author;
-            const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
-            return {
-                id: record.id,
-                text: record.content,
-                createdAt: record.created,
-                user: {
-                    id: user.id,
-                    name: user.name,
-                    avatar: url,
-                },
-            };
-        });
-
-        // Set the `messages` state with the transformed data
-        setMessages(messageList);
-        // Scroll the chat window to the bottom
-        scrollToBottom();
-
-        // Subscribe to real-time updates of the messages
-        await pb.realtime.subscribe("messages", async (data) => {
-            // When a new message is created
-            if (data.action === "create") {
-                // Fetch the data of the new message
-                const newMessage = await createMessageFromRecord(data.record);
-
-                // Add the new message to the `messages` state
-                // @ts-ignore
-                setMessages([newMessage, ...messages()]);
-                // Scroll the chat window to the bottom
-                scrollToBottom();
+            // Check if the user is authenticated
+            if (!pb.authStore.isValid || !localStorage.getItem("auth")) {
+                window.location.href = "/login";
             }
-        })
-    });
+
+            // Fetch the list of messages from the server
+            const resultList = await pb.collection("messages").getList(1, 50, {
+                sort: "-created",
+                expand: "author",
+            });
+
+            // Transform the fetched data into the format required by the application
+            const messageList = resultList.items.map(record => {
+                const user = record.expand.author;
+                const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
+                return {
+                    id: record.id,
+                    text: record.content,
+                    createdAt: record.created,
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        avatar: url,
+                    },
+                };
+            });
+
+            // Set the `messages` state with the transformed data
+            setMessages(messageList);
+
+            if ("Notification" in window) {
+                // Request permission to display notifications
+                Notification.requestPermission().then((permission) => {
+                    // If the user grants permission
+                    if (permission === "granted") {
+                        console.log("Notification permission granted.");
+                    } else {
+                        // If the user does not grant permission, still subscribe to the messages
+                        console.log("Notification permission not granted.");
+                    }
+                });
+            }
+
+
+            // Subscribe to real-time updates of the messages
+            await pb.realtime.subscribe("messages", async (data) => {
+                // When a new message is created
+                if (data.action === "create") {
+                    // Fetch the data of the new message
+                    const newMessage: Message = await createMessageFromRecord(data.record) as Message;
+
+                    // Add the new message to the `messages` state
+                    // @ts-ignore
+                    setMessages([newMessage, ...messages()]);
+                    // Scroll the chat window to the bottom
+                    scrollToBottom();
+
+                    // If the user has granted permission, display a notification for the new message
+                    if (Notification.permission === "granted" && document.visibilityState === "hidden") {
+                        const currentTime = Date.now();
+                        // Check if at least 10 seconds have passed since the last notification
+                        if (currentTime - lastNotificationTime >= 10000) {
+                            new Notification("New message", {
+                                body: newMessage.text,
+                                icon: newMessage.user.avatar,
+                            });
+                            // Update the timestamp of the last notification
+                            lastNotificationTime = currentTime;
+                        }
+                    }
+
+                    if (page() === resultList.totalPages) {
+                        setShowLoadMore(false);
+                    }
+                }
+            })
+        }
+    );
+
 
     /**
      * `scrollToBottom` is a function that scrolls the chat window to the bottom.
@@ -165,12 +243,19 @@ export default function Room() {
     const [isSending, setIsSending] = createSignal(false);
 
     /**
+     * Checks if a message can be sent based on certain conditions.
+     * @returns {boolean} - Returns true if a message can be sent, false otherwise.
+     */
+    const canSendMessage = (): boolean => !isSending() && text().trim() !== '' && text().length <= 400;
+
+
+    /**
      * Sends a message to the server.
      *
      * @async
      */
     const sendMessage = async () => {
-        if (isSending() || text().trim() === '' || text().length > 400) return;
+        if (!canSendMessage()) return;
 
         setIsSending(true);
         const data = {content: text(), author: localStorage.getItem("authID")};
@@ -196,23 +281,38 @@ export default function Room() {
     };
 
     return (
-        <section class="py-2 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)]">
+        <section class="py-2 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
             <div
-                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse"
+                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
                 id="chat"
             >
+
                 <Suspense fallback={<div>Loading...</div>}>
-                    {messages().map((message) => (
-                        <>
-                            <Chat
-                                id={message.id}
-                                user={message.user}
-                                text={message.text}
-                                createdAt={message.createdAt}
-                            />
-                        </>
-                    ))}
+                    {messages().length > 0 ? (
+                        messages().map((message) => (
+                            <>
+                                <Chat
+                                    id={"message-" + message.id}
+                                    user={message.user}
+                                    text={message.text}
+                                    createdAt={message.createdAt}
+                                />
+                            </>
+                        ))
+                    ) : (
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-gray-500">Welcome to Astrocket! Start a conversation here.</p>
+                        </div>
+                    )}
                 </Suspense>
+
+                {showLoadMore() ? (
+
+                    <button onClick={fetchMoreMessages} class="btn btn-ghost rounded-box">
+                        Load More
+                    </button>) : null}
+
+
             </div>
             <form class="form-control basis-2/10" onSubmit={handleSubmit}>
                 <div class="input-group w-full flex flex-row">
