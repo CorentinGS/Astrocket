@@ -165,12 +165,19 @@ export default function Room() {
     const [isSending, setIsSending] = createSignal(false);
 
     /**
+     * Checks if a message can be sent based on certain conditions.
+     * @returns {boolean} - Returns true if a message can be sent, false otherwise.
+     */
+    const canSendMessage = (): boolean => !isSending() && text().trim() !== '' && text().length <= 400;
+
+
+    /**
      * Sends a message to the server.
      *
      * @async
      */
     const sendMessage = async () => {
-        if (isSending() || text().trim() === '' || text().length > 400) return;
+        if (!canSendMessage()) return;
 
         setIsSending(true);
         const data = {content: text(), author: localStorage.getItem("authID")};
