@@ -108,57 +108,91 @@ export default function Room() {
         }
     };
 
+    let lastNotificationTime = 0;
+
+
     /**
      * This function is called when the component is mounted.
      */
     onMount(async () => {
-        // Check if the user is authenticated
-        if (!pb.authStore.isValid || !localStorage.getItem("auth")) {
-            window.location.href = "/login";
-        }
-
-        // Fetch the list of messages from the server
-        const resultList = await pb.collection("messages").getList(1, 50, {
-            sort: "-created",
-            expand: "author",
-        });
-
-        // Transform the fetched data into the format required by the application
-        const messageList = resultList.items.map(record => {
-            const user = record.expand.author;
-            const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
-            return {
-                id: record.id,
-                text: record.content,
-                createdAt: record.created,
-                user: {
-                    id: user.id,
-                    name: user.name,
-                    avatar: url,
-                },
-            };
-        });
-
-        // Set the `messages` state with the transformed data
-        setMessages(messageList);
-
-
-        // Subscribe to real-time updates of the messages
-        await pb.realtime.subscribe("messages", async (data) => {
-            // When a new message is created
-            if (data.action === "create") {
-                // Fetch the data of the new message
-                const newMessage = await createMessageFromRecord(data.record);
-
-                // Add the new message to the `messages` state
-                // @ts-ignore
-                setMessages([newMessage, ...messages()]);
-                // Scroll the chat window to the bottom
-                scrollToBottom();
+            // Check if the user is authenticated
+            if (!pb.authStore.isValid || !localStorage.getItem("auth")) {
+                window.location.href = "/login";
             }
-        })
 
-    });
+            // Fetch the list of messages from the server
+            const resultList = await pb.collection("messages").getList(1, 50, {
+                sort: "-created",
+                expand: "author",
+            });
+
+            // Transform the fetched data into the format required by the application
+            const messageList = resultList.items.map(record => {
+                const user = record.expand.author;
+                const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
+                return {
+                    id: record.id,
+                    text: record.content,
+                    createdAt: record.created,
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        avatar: url,
+                    },
+                };
+            });
+
+            // Set the `messages` state with the transformed data
+            setMessages(messageList);
+
+            if ("Notification" in window) {
+                // Request permission to display notifications
+                Notification.requestPermission().then((permission) => {
+                    // If the user grants permission
+                    if (permission === "granted") {
+                        console.log("Notification permission granted.");
+                    } else {
+                        // If the user does not grant permission, still subscribe to the messages
+                        console.log("Notification permission not granted.");
+                    }
+                });
+            }
+
+
+            // Subscribe to real-time updates of the messages
+            await pb.realtime.subscribe("messages", async (data) => {
+                // When a new message is created
+                if (data.action === "create") {
+                    // Fetch the data of the new message
+                    const newMessage: Message = await createMessageFromRecord(data.record) as Message;
+
+                    // Add the new message to the `messages` state
+                    // @ts-ignore
+                    setMessages([newMessage, ...messages()]);
+                    // Scroll the chat window to the bottom
+                    scrollToBottom();
+
+                    // If the user has granted permission, display a notification for the new message
+                    if (Notification.permission === "granted" && document.visibilityState === "hidden") {
+                        const currentTime = Date.now();
+                        // Check if at least 10 seconds have passed since the last notification
+                        if (currentTime - lastNotificationTime >= 10000) {
+                            new Notification("New message", {
+                                body: newMessage.text,
+                                icon: newMessage.user.avatar,
+                            });
+                            // Update the timestamp of the last notification
+                            lastNotificationTime = currentTime;
+                        }
+                    }
+
+                    if (page() === resultList.totalPages) {
+                        setShowLoadMore(false);
+                    }
+                }
+            })
+        }
+    );
 
 
     /**
