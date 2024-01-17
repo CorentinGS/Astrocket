@@ -1,6 +1,9 @@
 ---
-
+import LayoutVoid from "../layouts/LayoutVoid.astro";
+export const prerender = true;
 ---
+
+<LayoutVoid title="Astrocket">
 
 <main class="h-screen w-full flex flex-col justify-center items-center bg-base-100">
     <h1 class="text-9xl font-extrabold text-white tracking-widest">404</h1>
@@ -21,3 +24,4 @@
         </a>
     </button>
 </main>
+</LayoutVoid>

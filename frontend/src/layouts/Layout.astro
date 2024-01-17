@@ -5,6 +5,8 @@ import Footer from "../components/index/Footer.astro";
 import Fonts from "../components/utils/Fonts.astro";
 const { content } = Astro.props;
 
+import Pwa from "../components/utils/Pwa.astro";
+
 
 ---
 
@@ -97,9 +99,9 @@ const { content } = Astro.props;
       content="/favicons/favicon-144x144.png"
     />
     <meta name="msapplication-config" content="/browserconfig.xml" />
-    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
     <meta name="theme-color" content="#30E130" />
     <title></title>
+    <Pwa/>
 
   </head>
   <body>

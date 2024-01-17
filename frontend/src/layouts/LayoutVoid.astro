@@ -1,7 +1,12 @@
 ---
+import {Icon} from "astro-iconify";
+const {content} = Astro.props;
+
+
+// Helper imports
 import Fonts from "../components/utils/Fonts.astro";
 import Pwa from "../components/utils/Pwa.astro";
-const {content} = Astro.props;
+
 ---
 
 <html lang="en">
@@ -94,14 +99,11 @@ const {content} = Astro.props;
             content="/favicons/favicon-144x144.png"
     />
     <meta name="msapplication-config" content="/browserconfig.xml"/>
-    <meta name="theme-color" content="#30E130"/>
-
     <Pwa/>
-
-
 </head>
 <body>
 <slot/>
+
 <script>
     // This is a hack to get vite-plugin-pwa to generate a sw.js file.
     // Do not remove this script tag.

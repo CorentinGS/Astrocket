@@ -4,9 +4,8 @@ const {content} = Astro.props;
 
 
 // Helper imports
-import {seoConfig} from "../../utils/seoConfig";
 import Fonts from "../components/utils/Fonts.astro";
-import Logo from "../components/index/Logo.astro";
+import Pwa from "../components/utils/Pwa.astro";
 
 // Props
 export interface Props {
@@ -128,8 +127,7 @@ const {
             content="/favicons/favicon-144x144.png"
     />
     <meta name="msapplication-config" content="/browserconfig.xml"/>
-    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg"/>
-
+    <Pwa/>
 </head>
 <body>
 <div>
