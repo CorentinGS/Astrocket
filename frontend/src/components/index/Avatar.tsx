@@ -22,6 +22,7 @@ export default function Avatar(): JSX.Element {
     onMount(async () => {
         console.log("Avatar mounted");
         user = JSON.parse(localStorage.getItem("auth")?.toString() || "");
+        // check if user is logged in
         if (!user) {
             window.location.href = "/login";
         }

@@ -53,13 +53,14 @@ export default defineConfig({
         },
         workbox: {
             navigateFallback: '/404',
-            globPatterns: ['**/*.{css,js,html,svg,png,ico,txt}'],
+            globPatterns: ['**/*.{css,html,svg,ico,txt}'],
             globDirectory: 'dist',
             globIgnores: [
                 '**/node_modules/**/*',
                 'sw.js',
                 'workbox-*.js',
                 '**/Avatar.tsx',
+                '**/pocketbase.ts'
             ]
         },
         devOptions: {
