@@ -196,22 +196,28 @@ export default function Room() {
     };
 
     return (
-        <section class="py-2 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)]">
+        <section class="py-2 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
             <div
-                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse"
+                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
                 id="chat"
             >
                 <Suspense fallback={<div>Loading...</div>}>
-                    {messages().map((message) => (
-                        <>
-                            <Chat
-                                id={message.id}
-                                user={message.user}
-                                text={message.text}
-                                createdAt={message.createdAt}
-                            />
-                        </>
-                    ))}
+                    {messages().length > 0 ? (
+                        messages().map((message) => (
+                            <>
+                                <Chat
+                                    id={message.id}
+                                    user={message.user}
+                                    text={message.text}
+                                    createdAt={message.createdAt}
+                                />
+                            </>
+                        ))
+                    ) : (
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-gray-500">Welcome to Astrocket! Start a conversation here.</p>
+                        </div>
+                    )}
                 </Suspense>
             </div>
             <form class="form-control basis-2/10" onSubmit={handleSubmit}>
