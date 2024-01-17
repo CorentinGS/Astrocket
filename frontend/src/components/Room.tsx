@@ -56,7 +56,6 @@ export default function Room() {
      */
     const [messages, setMessages] = createSignal([] as Message[]);
 
-
     /**
      * `text` is a state variable that holds the current text input in the chat box.
      * `setText` is the function to update the `text` state.
@@ -65,46 +64,48 @@ export default function Room() {
      */
     const [text, setText] = createSignal("");
 
+    /**
+     * `page` is a state variable that holds the current page number for pagination.
+     * `setPage` is the function to update the `page` state.
+     *
+     * Initially, `page` is set to 1, indicating the first page.
+     */
     const [page, setPage] = createSignal(1);
 
+    /**
+     * `showLoadMore` is a state variable that indicates whether the "Load More" button should be displayed.
+     * `setShowLoadMore` is the function to update the `showLoadMore` state.
+     *
+     * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
+     */
     const [showLoadMore, setShowLoadMore] = createSignal(true);
 
-
+    /**
+     * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
+     *
+     * @async
+     */
     const fetchMoreMessages = async () => {
-        // Increment the page
         setPage(page() + 1);
 
-        // Fetch older messages from the server using pagination
-        const resultList = await pb.collection("messages").getList(page(), 50, {
-            sort: "-created",
-            expand: "author",
-        });
+        const resultList = await pb.collection("messages").getList(page(), 50, {sort: "-created", expand: "author"});
 
+        const olderMessages = resultList.items.map(record => ({
+            id: record.id,
+            text: record.content,
+            createdAt: record.created,
+            user: {
+                id: record.expand.author.id,
+                name: record.expand.author.name,
+                avatar: pb.getFileUrl(record.expand.author, record.expand.author.avatar, {thumb: "64x64"}),
+            },
+        }));
 
-        // Transform the fetched data into the format required by the application
-        const olderMessages = resultList.items.map(record => {
-            const user = record.expand.author;
-            const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
-            return {
-                id: record.id,
-                text: record.content,
-                createdAt: record.created,
-                user: {
-                    id: user.id,
-                    name: user.name,
-                    avatar: url,
-                },
-            };
-        });
-
-        // Append older messages to the current list
         setMessages([...messages(), ...olderMessages]);
-
 
         if (page() === resultList.totalPages) {
             setShowLoadMore(false);
         }
-
     };
 
     /**
