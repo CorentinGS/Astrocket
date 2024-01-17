@@ -6,7 +6,7 @@ import {
     onCleanup,
     lazy,
     onMount,
-    Suspense,
+    Suspense, JSX,
 } from "solid-js";
 
 const Chat = lazy(() => import("./Chat"));
@@ -47,7 +47,7 @@ export interface Message {
  *
  * @returns {JSX.Element} The rendered chat room component.
  */
-export default function Room() {
+export default function Room(): JSX.Element {
     /**
      * `messages` is a state variable that holds the list of messages in the chat room.
      * `setMessages` is the function to update the `messages` state.
@@ -78,7 +78,7 @@ export default function Room() {
      *
      * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
      */
-    const [showLoadMore, setShowLoadMore] = createSignal(true);
+    const [showLoadMore, setShowLoadMore] = createSignal(false);
 
     /**
      * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
@@ -141,6 +141,10 @@ export default function Room() {
                     },
                 };
             });
+
+            if (resultList.totalPages > 1) {
+                setShowLoadMore(true);
+            }
 
             // Set the `messages` state with the transformed data
             setMessages(messageList);
@@ -281,38 +285,41 @@ export default function Room() {
     };
 
     return (
-        <section class="py-2 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
+        <section class="py-6 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
             <div
                 class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
                 id="chat"
             >
 
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={
+                    <div class="flex items-center justify-center h-full">
+                        <p class="text-base-content/50">Loading the messages...</p><span
+                        class="loading loading-dots loading-sm"></span>
+                    </div>
+                }>
                     {messages().length > 0 ? (
-                        messages().map((message) => (
-                            <>
-                                <Chat
-                                    id={"message-" + message.id}
-                                    user={message.user}
-                                    text={message.text}
-                                    createdAt={message.createdAt}
-                                />
-                            </>
-                        ))
+                        <>
+                            {messages().map((message) => (
+                                <>
+                                    <Chat
+                                        id={"message-" + message.id}
+                                        user={message.user}
+                                        text={message.text}
+                                        createdAt={message.createdAt}
+                                    />
+                                </>
+                            ))}
+                            {showLoadMore() ? (
+                                <button onClick={fetchMoreMessages} class="btn btn-ghost rounded-box">
+                                    Load More
+                                </button>) : null}
+                        </>
                     ) : (
                         <div class="flex items-center justify-center h-full">
-                            <p class="text-gray-500">Welcome to Astrocket! Start a conversation here.</p>
+                            <p class="text-base-content/50">Welcome to Astrocket! Start a conversation here.</p>
                         </div>
                     )}
                 </Suspense>
-
-                {showLoadMore() ? (
-
-                    <button onClick={fetchMoreMessages} class="btn btn-ghost rounded-box">
-                        Load More
-                    </button>) : null}
-
-
             </div>
             <form class="form-control basis-2/10" onSubmit={handleSubmit}>
                 <div class="input-group w-full flex flex-row">

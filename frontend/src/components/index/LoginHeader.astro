@@ -4,12 +4,12 @@ import Avatar from "./Avatar.tsx";
 ---
 
 <section class="navbar md:px-5">
-  <div class="navbar-start">
-    <a class="" href={"/"}>
-      <Logo />
-    </a>
-  </div>
-  <div class="navbar-end">
-    <Avatar client:visible />
-  </div>
+    <div class="navbar-start">
+        <a class="" href={"/"}>
+            <Logo class="h-4 w-4"/>
+        </a>
+    </div>
+    <div class="navbar-end">
+        <Avatar client:load/>
+    </div>
 </section>
