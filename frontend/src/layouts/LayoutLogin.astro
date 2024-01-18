@@ -4,9 +4,8 @@ const {content} = Astro.props;
 
 
 // Helper imports
-import {seoConfig} from "../../utils/seoConfig";
 import Fonts from "../components/utils/Fonts.astro";
-import Logo from "../components/index/Logo.astro";
+import Pwa from "../components/utils/Pwa.astro";
 
 // Props
 export interface Props {
@@ -41,6 +40,7 @@ const {
 <html lang="en">
 <head>
     <Fonts/>
+    <meta name="robots" content="noindex">
 
     <!-- Global meta tags. -->
     <meta charset="utf-8"/>
@@ -128,8 +128,9 @@ const {
             content="/favicons/favicon-144x144.png"
     />
     <meta name="msapplication-config" content="/browserconfig.xml"/>
-    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg"/>
+    <title>Astrocket</title>
 
+    <Pwa/>
 </head>
 <body>
 <div>

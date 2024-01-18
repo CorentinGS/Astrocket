@@ -1,9 +1,8 @@
 /** @jsxImportSource solid-js */
 
-import {createSignal, createEffect, onCleanup, lazy, onMount, JSX} from "solid-js";
+import {createSignal, onMount, JSX} from "solid-js";
 import {Icon} from "@iconify-icon/solid";
 import {pb} from "../utils/pocketbase";
-import * as buffer from "buffer";
 
 /**
  * Login component
@@ -163,7 +162,6 @@ export default function Login(): JSX.Element {
     onMount(async () => {
         const authItem = localStorage.getItem("auth");
         if (authItem && authItem !== "") {
-            const user = JSON.parse(authItem);
             if (pb.authStore.isValid) {
                 window.location.href = "/room";
             }
