@@ -22,7 +22,7 @@ export default defineConfig({
     },
     prefetch: true,
     site: "https://astrocket.corentings.dev",
-    integrations: [tailwind(), solidJs(), sitemap(), compress({}), critters(), compressor(), AstroPWA({
+    integrations: [tailwind(), solidJs(), sitemap(), compress({}), compressor(), AstroPWA({
         mode: 'production',
         registerType: 'autoUpdate',
         scope: '/',
