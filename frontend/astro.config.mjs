@@ -19,16 +19,10 @@ import critters from "astro-critters";
 export default defineConfig({
     image: {
         service: process.env.NODE_ENV === 'production' ? sharpImageService() : squooshImageService(),
-
     },
     prefetch: true,
-    experimental: {
-        clientPrerender: true,
-    },
     site: "https://astrocket.corentings.dev",
-    integrations: [tailwind(), solidJs(), sitemap(), compress({
-
-    }), critters(), compressor(), AstroPWA({
+    integrations: [tailwind(), solidJs(), sitemap(), compress({}), critters(), compressor(), AstroPWA({
         mode: 'production',
         registerType: 'autoUpdate',
         scope: '/',
