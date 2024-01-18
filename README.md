@@ -1,4 +1,6 @@
 # Astrocket
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCorentinGS%2FAstrocket.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FCorentinGS%2FAstrocket?ref=badge_shield)
+
 
 Astrocket is a chat application that allows users to chat with each other in real-time. It is built with Astro &
 Pocketbase.
@@ -22,3 +24,6 @@ Sciences.
 ## License
 
 [MIT](LICENSE)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCorentinGS%2FAstrocket.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FCorentinGS%2FAstrocket?ref=badge_large)
