@@ -69,6 +69,10 @@ docker compose up -d
 
 You can access the demo [here](https://astrocket.corentings.dev).
 
+You can login using the following credentials:
+username: `demo`
+password: `demo123456789`
+
 ## Disclaimer
 
 This project is for educational purposes only. It is not intended to be used in production. The project is destined to

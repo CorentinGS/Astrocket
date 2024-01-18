@@ -21,22 +21,20 @@
 </div>
 
 <!-- TOC -->
-
-* [About The Project](#about-the-project)
+  * [About The Project](#about-the-project)
     * [Built With](#built-with)
-* [Getting Started](#getting-started)
+  * [Getting Started](#getting-started)
     * [Prerequisites (for development)](#prerequisites-for-development)
     * [Installation (I assume you have a backend running)](#installation-i-assume-you-have-a-backend-running)
-        * [Using Docker](#using-docker)
-        * [Using Docker Compose](#using-docker-compose)
-        * [Using Devbox (recommended)](#using-devbox-recommended)
-* [Architecture](#architecture)
+      * [Using Docker](#using-docker)
+      * [Using Docker Compose](#using-docker-compose)
+      * [Using Devbox (recommended)](#using-devbox-recommended)
+  * [Architecture](#architecture)
     * [Pages](#pages)
     * [Components](#components)
     * [Configuration](#configuration)
-* [Roadmap](#roadmap)
-* [Contact](#contact)
-
+  * [Roadmap](#roadmap)
+  * [Contact](#contact)
 <!-- TOC -->
 
 
