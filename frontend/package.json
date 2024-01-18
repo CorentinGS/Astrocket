@@ -12,7 +12,6 @@
     "serve": "node ./dist/server/entry.mjs",
     "lint:prettier": "prettier . \"**/*.astro\" --cache --write --list-different",
     "format": "run-s format:*",
-    "format:eslint": "eslint --ignore-path .gitignore --ext js,jsx,ts,tsx,mjs,cjs,astro --fix .",
     "format:imports": "organize-imports-cli ./tsconfig.json"
   },
   "dependencies": {
@@ -46,11 +45,11 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.7",
+    "organize-imports-cli": "^0.10.0",
     "postcss": "^8.4.33",
     "prettier": "^3.2.2",
     "prettier-plugin-astro": "^0.12.3",
-    "typescript": "^5.3.2",
-    "organize-imports-cli": "^0.10.0"
+    "typescript": "^5.3.2"
   },
   "pnpm": {
     "overrides": {

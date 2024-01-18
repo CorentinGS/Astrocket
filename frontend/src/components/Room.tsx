@@ -1,9 +1,9 @@
 /** @jsxImportSource solid-js */
 
-import { createSignal, lazy, onMount, Suspense, JSX } from "solid-js";
+import { createSignal, JSX, lazy, onMount, Suspense } from "solid-js";
+import TextareaAutosize from "solid-textarea-autosize";
 
 const Chat = lazy(() => import("./Chat"));
-import TextareaAutosize from "solid-textarea-autosize";
 
 import { pb } from "../utils/pocketbase";
 
