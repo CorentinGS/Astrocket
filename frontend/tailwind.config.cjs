@@ -1,17 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   jit: true,
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          'Syne',
-          'Nunito',
-          'system-ui',
-          'sans-serif',
-        ],
+        sans: ["Syne", "Nunito", "system-ui", "sans-serif"],
       },
     },
   },
@@ -20,12 +15,11 @@ module.exports = {
   },
 
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/aspect-ratio'),
-    require('daisyui'),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/aspect-ratio"),
+    require("daisyui"),
   ],
-
 
   daisyui: {
     themes: [
