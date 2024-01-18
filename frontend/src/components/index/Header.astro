@@ -3,26 +3,26 @@ import Logo from "./Logo.astro";
 ---
 
 <header class="sticky top-0 z-40 bg-base-100">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
-    <div class="flex lg:flex-1">
-      <a href={"/"} class="-m-1.5 p-1.5 flex hoveranimation text-xl normal-case lg:text-3xl"
-         data-astro-prefetch="hover">
-        <Logo class="w-8 h-8 mr-2"/>
-      </a>
-    </div>
-    <div class="flex flex-1 justify-center">
-      <h1 class="text-2xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent to-secondary">Astrocket</h1>
-    </div>
-    <div class="flex flex-1 justify-end">
-      <a
-          href={"/login"}
-          aria-label="login"
-          class="ml-3 btn btn-primary h-10 px-5 shadow-none text-base"
-          rel="prefetch"
-      >
-        Login
-      </a>
-    </div>
-  </nav>
-
+    <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+        <div class="flex lg:flex-1">
+            <a href={"/"} class="-m-1.5 p-1.5 flex hoveranimation text-xl normal-case lg:text-3xl"
+               data-astro-prefetch="hover">
+                <Logo class="w-8 h-8 mr-2"/>
+            </a>
+        </div>
+        <div class="flex flex-1 justify-center">
+            <h1 class="text-2xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent to-secondary">
+                Astrocket</h1>
+        </div>
+        <div class="flex flex-1 justify-end">
+            <a
+                    href={"/login"}
+                    aria-label="login"
+                    class="ml-3 btn btn-primary h-10 px-5 shadow-none text-base"
+                    rel="prefetch"
+            >
+                Login
+            </a>
+        </div>
+    </nav>
 </header>
