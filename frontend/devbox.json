@@ -9,7 +9,7 @@
       "yarn add sharp --ignore-engines"
     ],
     "scripts": {
-      "dev": "yarn dev",
+      "dev": "yarn dev --host",
       "build": "yarn build",
       "start": "yarn run serve",
       "preview": "yarn run build && yarn run preview"
