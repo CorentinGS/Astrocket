@@ -1,4 +1,4 @@
-import {defineConfig, squooshImageService} from "astro/config";
+import {defineConfig, sharpImageService, squooshImageService} from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import solidJs from "@astrojs/solid-js";
 import node from '@astrojs/node';
@@ -18,11 +18,16 @@ import critters from "astro-critters";
 // https://astro.build/config
 export default defineConfig({
     image: {
-        service: squooshImageService(),
+        service: process.env.NODE_ENV === 'production' ? sharpImageService() : squooshImageService(),
+
+    },
+    prefetch: true,
+    experimental: {
+        clientPrerender: true,
     },
     site: "https://astrocket.corentings.dev",
     integrations: [tailwind(), solidJs(), sitemap(), compress({
-        css: false
+
     }), critters(), compressor(), AstroPWA({
         mode: 'production',
         registerType: 'autoUpdate',
