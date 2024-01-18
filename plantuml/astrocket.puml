@@ -3,27 +3,21 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-LAYOUT_WITH_LEGEND()
-
 Person(user, "User", "Uses the application via a Web Browser")
 System_Ext(oauthProvider, "OAuth Provider", "External OAuth provider")
 
 System_Boundary(server, "Server") {
-    Container(ssrApp, "SSR Application", "Server Side Rendered Application") {
-        Boundary(ssg, "SSG") {
-            Component(landingPage, "Landing Page", "Server Side Generated landing page")
-            Component(assets, "Assets", "Server Side Generated assets")
-        }
+    Container(ssrApp, "SSR Application", "Astro") {
+            Component(landingPage, "Landing Page", "Static Generated Landing Page")
+            Component(assets, "Assets", "Server Side Rendered assets")
     }
     Container(api, "API", "Pocketbase", "Handles requests from the CSR components")
 }
 
 System_Boundary(browser, "Browser") {
     Container(csrComponents, "CSR Components", "SolidJS") {
-        Boundary(csr, "CSR") {
             Component(loginComponent, "Login Component", "Client Side Rendered login component")
             Component(chatRoomComponent, "ChatRoom Component", "Client Side Rendered chat room component")
-        }
     }
 }
 
