@@ -65,6 +65,19 @@ the [GitHub packages](https://github.com/CorentinGS?tab=packages&repo_name=Astro
 docker compose up -d
 ```
 
+### Default data
+
+The default data is stored in the [backend/pb_data](backend/pb_data) for pocketbase binaries and [data](data) for docker
+compose volumes.
+`data` is a copy of `backend/pb_data` and is used by docker compose. If you don't want to use the default data, you can
+remove both folders and they will be recreated on the next start.
+Keep in mind that if you remove the data, you will lose all the messages and users.
+
+If for some reason docker doesn't load the default data, you can load copy the data from `backend/pb_data` to `data` and
+restart the containers.
+
+The default admin user is `admin@corentings.dev` and the password is `admin123456789`. I recommend you to change the admin password as soon as possible.
+
 ## Demo
 
 You can access the demo [here](https://astrocket.corentings.dev).
