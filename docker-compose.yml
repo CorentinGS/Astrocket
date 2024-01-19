@@ -3,9 +3,7 @@ version: "3.8"
 services:
   backend:
     restart: unless-stopped
-    build:
-      context: backend
-      dockerfile: Dockerfile
+    image: ghcr.io/corentings/astrocket/backend:v0.1.9
     ports:
       - "8090:8080"
     volumes:
@@ -15,9 +13,7 @@ services:
       - app
   frontend:
     restart: unless-stopped
-    build:
-      context: frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/corentings/astrocket/frontend:v0.2.1
     ports:
       - "4321:4321"
     networks:
