@@ -105,6 +105,16 @@ docker-compose up -d
 
 #### Using pocketbase binary
 
+You can download the latest release [here](https://github.com/pocketbase/pocketbase/releases/tag/v0.20.7)
+
+Example for linux:
+
+```sh
+wget  https://github.com/pocketbase/pocketbase/releases/download/v0.20.7/pocketbase_0.20.7_linux_amd64.zip && \
+unzip pocketbase_0.20.7_linux_amd64.zip && \
+chmod +x pocketbase
+```
+
 3. Run the pocketbase binary
 
 ```sh
