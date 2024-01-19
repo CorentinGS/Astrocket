@@ -104,7 +104,17 @@ Note: If you want to use docker or devbox, you can skip the following steps
 yarn install
 ``` 
 
-You can also use npm or pnpm
+You can also use npm or pnpm 
+
+If you get an error about the `sharp` package, you need to install the dependencies for your system. See
+the [sharp documentation](https://sharp.pixelplumbing.com/install#cross-platform) for more information.
+
+Easy workaround for Linux:
+
+```sh
+yarn add sharp --ignore-engines
+```
+
 
 4. Launch the project
 
