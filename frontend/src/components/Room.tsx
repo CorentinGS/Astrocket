@@ -1,20 +1,22 @@
 /** @jsxImportSource solid-js */
 
 import {
-  createEffect,
-  createSignal,
-  JSX,
-  lazy,
-  onMount,
-  Suspense,
+    createEffect,
+    createSignal,
+    JSX,
+    lazy,
+    onMount,
+    Suspense,
 } from "solid-js";
 import TextareaAutosize from "solid-textarea-autosize";
 
 const Chat = lazy(() => import("./Chat"));
 
-import { Icon } from "@iconify-icon/solid";
-import { EmojiPicker } from "solid-emoji-picker";
-import { pb } from "../utils/pocketbase";
+import {Icon} from "@iconify-icon/solid";
+import {EmojiPicker} from "solid-emoji-picker";
+import {pb} from "../utils/pocketbase";
+
+const Picker = lazy(() => import("./utils/Picker"));
 
 /**
  * Message interface represents the structure of a message in the application.
@@ -30,14 +32,14 @@ import { pb } from "../utils/pocketbase";
  * @property {string} user.avatar - The avatar of the user.
  */
 export interface Message {
-  id: string;
-  text: string;
-  createdAt: string;
-  user: {
     id: string;
-    name: string;
-    avatar: string;
-  };
+    text: string;
+    createdAt: string;
+    user: {
+        id: string;
+        name: string;
+        avatar: string;
+    };
 }
 
 /**
@@ -49,413 +51,394 @@ export interface Message {
  * @returns {JSX.Element} The rendered chat room component.
  */
 export default function Room(): JSX.Element {
-  /**
-   * `messages` is a state variable that holds the list of messages in the chat room.
-   * `setMessages` is the function to update the `messages` state.
-   *
-   * Initially, `messages` is set to an empty array.
-   */
-  const [messages, setMessages] = createSignal([] as Message[]);
+    /**
+     * `messages` is a state variable that holds the list of messages in the chat room.
+     * `setMessages` is the function to update the `messages` state.
+     *
+     * Initially, `messages` is set to an empty array.
+     */
+    const [messages, setMessages] = createSignal([] as Message[]);
 
-  /**
-   * `text` is a state variable that holds the current text input in the chat box.
-   * `setText` is the function to update the `text` state.
-   *
-   * Initially, `text` is set to an empty string.
-   */
-  const [text, setText] = createSignal("");
+    /**
+     * `text` is a state variable that holds the current text input in the chat box.
+     * `setText` is the function to update the `text` state.
+     *
+     * Initially, `text` is set to an empty string.
+     */
+    const [text, setText] = createSignal("");
 
-  /**
-   * `page` is a state variable that holds the current page number for pagination.
-   * `setPage` is the function to update the `page` state.
-   *
-   * Initially, `page` is set to 1, indicating the first page.
-   */
-  const [page, setPage] = createSignal(1);
+    /**
+     * `page` is a state variable that holds the current page number for pagination.
+     * `setPage` is the function to update the `page` state.
+     *
+     * Initially, `page` is set to 1, indicating the first page.
+     */
+    const [page, setPage] = createSignal(1);
 
-  /**
-   * `showLoadMore` is a state variable that indicates whether the "Load More" button should be displayed.
-   * `setShowLoadMore` is the function to update the `showLoadMore` state.
-   *
-   * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
-   */
-  const [showLoadMore, setShowLoadMore] = createSignal(false);
+    /**
+     * `showLoadMore` is a state variable that indicates whether the "Load More" button should be displayed.
+     * `setShowLoadMore` is the function to update the `showLoadMore` state.
+     *
+     * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
+     */
+    const [showLoadMore, setShowLoadMore] = createSignal(false);
 
-  /**
-   * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
-   *
-   * @async
-   */
-  const fetchMoreMessages = async () => {
-    setPage(page() + 1);
+    /**
+     * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
+     *
+     * @async
+     */
+    const fetchMoreMessages = async () => {
+        setPage(page() + 1);
 
-    const resultList = await pb
-      .collection("messages")
-      .getList(page(), 50, { sort: "-created", expand: "author" });
+        const resultList = await pb
+            .collection("messages")
+            .getList(page(), 50, {sort: "-created", expand: "author"});
 
-    const olderMessages = resultList.items.map((record) => ({
-      id: record.id,
-      text: record.content,
-      createdAt: record.created,
-      user: {
-        id: record.expand.author.id,
-        name: record.expand.author.name,
-        avatar: pb.getFileUrl(
-          record.expand.author,
-          record.expand.author.avatar,
-          { thumb: "64x64" },
-        ),
-      },
-    }));
+        const olderMessages = resultList.items.map((record) => ({
+            id: record.id,
+            text: record.content,
+            createdAt: record.created,
+            user: {
+                id: record.expand.author.id,
+                name: record.expand.author.name,
+                avatar: pb.getFileUrl(
+                    record.expand.author,
+                    record.expand.author.avatar,
+                    {thumb: "64x64"},
+                ),
+            },
+        }));
 
-    setMessages([...messages(), ...olderMessages]);
-
-    if (page() === resultList.totalPages) {
-      setShowLoadMore(false);
-    }
-  };
-
-  let lastNotificationTime = 0;
-
-  /**
-   * This function is called when the component is mounted.
-   */
-  onMount(async () => {
-    // Check if the user is authenticated
-    if (!pb.authStore.isValid || !localStorage.getItem("auth")) {
-      window.location.href = "/login";
-    }
-
-    // Fetch the list of messages from the server
-    const resultList = await pb.collection("messages").getList(1, 50, {
-      sort: "-created",
-      expand: "author",
-    });
-
-    // Transform the fetched data into the format required by the application
-    const messageList = resultList.items.map((record) => {
-      const user = record.expand.author;
-      const url = pb.getFileUrl(user, user.avatar, { thumb: "64x64" });
-      return {
-        id: record.id,
-        text: record.content,
-        createdAt: record.created,
-        user: {
-          id: user.id,
-          name: user.name,
-          avatar: url,
-        },
-      };
-    });
-
-    if (resultList.totalPages > 1) {
-      setShowLoadMore(true);
-    }
-
-    // Set the `messages` state with the transformed data
-    setMessages(messageList);
-
-    if ("Notification" in window) {
-      // Request permission to display notifications
-      Notification.requestPermission().then((permission) => {
-        // If the user grants permission
-        if (permission === "granted") {
-          console.log("Notification permission granted.");
-        } else {
-          // If the user does not grant permission, still subscribe to the messages
-          console.log("Notification permission not granted.");
-        }
-      });
-    }
-
-    // Subscribe to real-time updates of the messages
-    await pb.realtime.subscribe("messages", async (data) => {
-      // When a new message is created
-      if (data.action === "create") {
-        // Fetch the data of the new message
-        const newMessage: Message = (await createMessageFromRecord(
-          data.record,
-        )) as Message;
-
-        console.log("New message | text:", newMessage.text);
-
-        // Add the new message to the `messages` state
-        // @ts-ignore
-        setMessages([newMessage, ...messages()]);
-        // Scroll the chat window to the bottom
-        scrollToBottom();
-
-        // If the user has granted permission, display a notification for the new message
-        if (
-          Notification.permission === "granted" &&
-          document.visibilityState === "hidden"
-        ) {
-          const currentTime = Date.now();
-          // Check if at least 10 seconds have passed since the last notification
-          if (currentTime - lastNotificationTime >= 10000) {
-            new Notification("New message", {
-              body: newMessage.text,
-              icon: newMessage.user.avatar,
-            });
-            // Update the timestamp of the last notification
-            lastNotificationTime = currentTime;
-          }
-        }
+        setMessages([...messages(), ...olderMessages]);
 
         if (page() === resultList.totalPages) {
-          setShowLoadMore(false);
+            setShowLoadMore(false);
         }
-      }
-    });
-  });
-
-  /**
-   * `scrollToBottom` is a function that scrolls the chat window to the bottom.
-   *
-   * It first gets the chat element by its id. If the chat element exists, it sets its scrollTop property to its scrollHeight.
-   * This effectively scrolls the chat window to the bottom, showing the most recent messages.
-   */
-  function scrollToBottom() {
-    const chat = document.getElementById("chat");
-    if (chat) chat.scrollTop = chat.scrollHeight;
-  }
-
-  /**
-   * Creates a message object from a record.
-   *
-   * @param {Object} record - The record from which to create the message object.
-   * @returns {Promise<Object>} A promise that resolves to the created message object.
-   */
-  async function createMessageFromRecord(record: {
-    author: string;
-    id: any;
-    content: any;
-    created: any;
-  }): Promise<object> {
-    const author = await pb.collection("users").getOne(record.author);
-    const url = pb.getFileUrl(author, author.avatar, { thumb: "64x64" });
-    return {
-      id: record.id,
-      text: record.content,
-      createdAt: record.created,
-      user: {
-        id: author.id,
-        name: author.name,
-        avatar: url,
-      },
     };
-  }
 
-  /**
-   * `isSending` is a state variable that indicates whether a message is currently being sent.
-   * `setIsSending` is the function to update the `isSending` state.
-   *
-   * Initially, `isSending` is set to false.
-   */
-  const [isSending, setIsSending] = createSignal(false);
+    let lastNotificationTime = 0;
 
-  /**
-   * Checks if a message can be sent based on certain conditions.
-   * @returns {boolean} - Returns true if a message can be sent, false otherwise.
-   */
-  const canSendMessage = (): boolean =>
-    !isSending() && text().trim() !== "" && text().length <= 400;
+    /**
+     * This function is called when the component is mounted.
+     */
+    onMount(async () => {
+        // Check if the user is authenticated
+        if (!pb.authStore.isValid || !localStorage.getItem("auth")) {
+            window.location.href = "/login";
+        }
 
-  /**
-   * Sends a message to the server.
-   *
-   * @async
-   */
-  const sendMessage = async () => {
-    if (!canSendMessage()) return; // If a message cannot be sent, return
+        // Fetch the list of messages from the server
+        const resultList = await pb.collection("messages").getList(1, 50, {
+            sort: "-created",
+            expand: "author",
+        });
 
-    console.log("Sending message | text:", text());
+        // Transform the fetched data into the format required by the application
+        const messageList = resultList.items.map((record) => {
+            const user = record.expand.author;
+            const url = pb.getFileUrl(user, user.avatar, {thumb: "64x64"});
+            return {
+                id: record.id,
+                text: record.content,
+                createdAt: record.created,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    avatar: url,
+                },
+            };
+        });
 
-    setIsSending(true);
-    const data = { content: text(), author: localStorage.getItem("authID") };
+        if (resultList.totalPages > 1) {
+            setShowLoadMore(true);
+        }
 
-    try {
-      await pb.collection("messages").create(data);
-    } finally {
-      setIsSending(false);
+        // Set the `messages` state with the transformed data
+        setMessages(messageList);
+
+        if ("Notification" in window) {
+            // Request permission to display notifications
+            Notification.requestPermission().then((permission) => {
+                // If the user grants permission
+                if (permission === "granted") {
+                    console.log("Notification permission granted.");
+                } else {
+                    // If the user does not grant permission, still subscribe to the messages
+                    console.log("Notification permission not granted.");
+                }
+            });
+        }
+
+        // Subscribe to real-time updates of the messages
+        await pb.realtime.subscribe("messages", async (data) => {
+            // When a new message is created
+            if (data.action === "create") {
+                // Fetch the data of the new message
+                const newMessage: Message = (await createMessageFromRecord(
+                    data.record,
+                )) as Message;
+
+                // Add the new message to the `messages` state
+                // @ts-ignore
+                setMessages([newMessage, ...messages()]);
+                // Scroll the chat window to the bottom
+                scrollToBottom();
+
+                // If the user has granted permission, display a notification for the new message
+                if (
+                    Notification.permission === "granted" &&
+                    document.visibilityState === "hidden"
+                ) {
+                    const currentTime = Date.now();
+                    // Check if at least 10 seconds have passed since the last notification
+                    if (currentTime - lastNotificationTime >= 10000) {
+                        new Notification("New message", {
+                            body: newMessage.text,
+                            icon: newMessage.user.avatar,
+                        });
+                        // Update the timestamp of the last notification
+                        lastNotificationTime = currentTime;
+                    }
+                }
+
+                if (page() === resultList.totalPages) {
+                    setShowLoadMore(false);
+                }
+            }
+        });
+    });
+
+    /**
+     * `scrollToBottom` is a function that scrolls the chat window to the bottom.
+     *
+     * It first gets the chat element by its id. If the chat element exists, it sets its scrollTop property to its scrollHeight.
+     * This effectively scrolls the chat window to the bottom, showing the most recent messages.
+     */
+    function scrollToBottom() {
+        const chat = document.getElementById("chat");
+        if (chat) chat.scrollTop = chat.scrollHeight;
     }
 
-    setText("");
-    scrollToBottom();
-  };
-
-  /**
-   * Handles the form submission event.
-   *
-   * @param {Event} e - The form submission event.
-   */
-  const handleSubmit = (e: Event) => {
-    e.preventDefault();
-    sendMessage().catch(console.error);
-  };
-
-  createEffect(() => {
-    const length = text().length;
-    if (length > 400) {
-      setText(text().slice(0, 400));
+    /**
+     * Creates a message object from a record.
+     *
+     * @param {Object} record - The record from which to create the message object.
+     * @returns {Promise<Object>} A promise that resolves to the created message object.
+     */
+    async function createMessageFromRecord(record: {
+        author: string;
+        id: any;
+        content: any;
+        created: any;
+    }): Promise<object> {
+        const author = await pb.collection("users").getOne(record.author);
+        const url = pb.getFileUrl(author, author.avatar, {thumb: "64x64"});
+        return {
+            id: record.id,
+            text: record.content,
+            createdAt: record.created,
+            user: {
+                id: author.id,
+                name: author.name,
+                avatar: url,
+            },
+        };
     }
 
-    const input = document.getElementById("messageInput");
-    if (input) {
-      input.focus();
-    }
+    /**
+     * `isSending` is a state variable that indicates whether a message is currently being sent.
+     * `setIsSending` is the function to update the `isSending` state.
+     *
+     * Initially, `isSending` is set to false.
+     */
+    const [isSending, setIsSending] = createSignal(false);
 
-    const messageLength = document.getElementById("messageLength");
-    if (messageLength) {
-      messageLength.classList.remove("text-gray-500");
-      messageLength.classList.remove("text-warning");
-      if (length > 300 && length < 400) {
-        messageLength.classList.add("text-warning");
-      } else if (length >= 400) {
-        messageLength.classList.add("text-error");
-      } else {
-        messageLength.classList.add("text-gray-500");
-      }
-    }
-  });
+    /**
+     * Checks if a message can be sent based on certain conditions.
+     * @returns {boolean} - Returns true if a message can be sent, false otherwise.
+     */
+    const canSendMessage = (): boolean =>
+        !isSending() && text().trim() !== "" && text().length <= 400;
 
-  function pickEmoji(emoji: { emoji: string }) {
-    setText(text() + emoji.emoji);
-    setShowEmojiPicker(false);
-  }
+    /**
+     * Sends a message to the server.
+     *
+     * @async
+     */
+    const sendMessage = async () => {
+        if (!canSendMessage()) return; // If a message cannot be sent, return
 
-  const [showEmojiPicker, setShowEmojiPicker] = createSignal(false);
-  const [search, setSearch] = createSignal("");
+        setIsSending(true);
+        const data = {content: text(), author: localStorage.getItem("authID")};
 
-  return (
-    <section class="py-6 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
-      <div
-        class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
-        id="chat"
-      >
-        <Suspense
-          fallback={
-            <div class="flex items-center justify-center h-full">
-              <p class="text-base-content/50">Loading the messages...</p>
-              <span class="loading loading-dots loading-sm"></span>
-            </div>
-          }
-        >
-          {messages().length > 0 ? (
-            <>
-              {messages().map((message) => (
-                <>
-                  <Chat
-                    id={"message-" + message.id}
-                    user={message.user}
-                    text={message.text}
-                    createdAt={message.createdAt}
-                  />
-                </>
-              ))}
-              {showLoadMore() ? (
-                <button
-                  onClick={fetchMoreMessages}
-                  class="btn btn-ghost rounded-box"
+        try {
+            await pb.collection("messages").create(data);
+        } finally {
+            setIsSending(false);
+        }
+
+        setText("");
+        scrollToBottom();
+    };
+
+    /**
+     * Handles the form submission event.
+     *
+     * @param {Event} e - The form submission event.
+     */
+    const handleSubmit = (e: Event) => {
+        e.preventDefault();
+        sendMessage().catch(console.error);
+    };
+
+    createEffect(() => {
+        const length = text().length;
+        if (length > 400) {
+            setText(text().slice(0, 400));
+        }
+
+        const input = document.getElementById("messageInput");
+        if (input) {
+            input.focus();
+        }
+
+        const messageLength = document.getElementById("messageLength");
+        if (messageLength) {
+            messageLength.classList.remove("text-gray-500");
+            messageLength.classList.remove("text-warning");
+            if (length > 300 && length < 400) {
+                messageLength.classList.add("text-warning");
+            } else if (length >= 400) {
+                messageLength.classList.add("text-error");
+            } else {
+                messageLength.classList.add("text-gray-500");
+            }
+        }
+    });
+
+    const handleEmojiSelect = (emoji: string) => {
+        setText(text() + emoji);
+    };
+
+    const [isMobile, setIsMobile] = createSignal(window.innerWidth <= 768);
+
+
+    createEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    });
+
+
+    return (
+        <section class="py-6 flex flex-col max-w-7xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
+            <div
+                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
+                id="chat"
+            >
+                <Suspense
+                    fallback={
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-base-content/50">Loading the messages...</p>
+                            <span class="loading loading-dots loading-sm"></span>
+                        </div>
+                    }
                 >
-                  Load More
-                </button>
-              ) : null}
-            </>
-          ) : (
-            <div class="flex items-center justify-center h-full">
-              <p class="text-base-content/50">
-                Welcome to Astrocket! Start a conversation here.
-              </p>
+                    {messages().length > 0 ? (
+                        <>
+                            {messages().map((message) => (
+                                <>
+                                    <Chat
+                                        id={"message-" + message.id}
+                                        user={message.user}
+                                        text={message.text}
+                                        createdAt={message.createdAt}
+                                    />
+                                </>
+                            ))}
+                            {showLoadMore() ? (
+                                <button
+                                    onClick={fetchMoreMessages}
+                                    class="btn btn-ghost rounded-box"
+                                >
+                                    Load More
+                                </button>
+                            ) : null}
+                        </>
+                    ) : (
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-base-content/50">
+                                Welcome to Astrocket! Start a conversation here.
+                            </p>
+                        </div>
+                    )}
+                </Suspense>
             </div>
-          )}
-        </Suspense>
-      </div>
-      <form class="form-control basis-2/10" onSubmit={handleSubmit}>
-        <div class="input-group w-full flex flex-row">
-          <TextareaAutosize
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter" && !ev.shiftKey) {
-                ev.preventDefault();
-                sendMessage().catch(console.error);
-              } else if (ev.key === "Enter" && ev.shiftKey) {
-                ev.preventDefault();
-                setText(text() + "\n");
-              }
-            }}
-            id="messageInput"
-            placeholder="Type your message"
-            class="input input-bordered w-[90%] min-h-[50px] resize-none"
-            onInput={(ev) => {
-              let inputValue = ev.currentTarget.value;
-              if (inputValue.length > 400) {
-                inputValue = inputValue.slice(0, 400);
-                setText(inputValue);
-              }
+            <form class="form-control basis-2/10" onSubmit={handleSubmit}>
+                <div class="input-group w-full flex flex-row">
+                    <div class="relative w-[90%]">
 
-              setText(ev.currentTarget.value);
-            }}
-            value={text()}
-          />
-          <div class="dropdown dropdown-top dropdown-end">
-            <button
-              onClick={() => setShowEmojiPicker(!showEmojiPicker())}
-              class="btn btn-ghost rounded-box"
-            >
-              <Icon
-                icon="twemoji:grinning-face-with-smiling-eyes"
-                class="text-2xl"
-              />
-            </button>
-            <ul
-              tabIndex="0"
-              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box overflow-auto text-xl w-32 h-32 md:w-64 md:h-64"
-            >
-              {showEmojiPicker() && (
-                <>
-                  <div class="flex flex-col">
-                    <input
-                      type="text"
-                      class="input input-bordered w-full p-2 rounded-lg"
-                      placeholder="Search emoji"
-                      onInput={(ev) => setSearch(ev.currentTarget.value)}
-                      value={search()}
-                    />
-                    <EmojiPicker
-                      onEmojiClick={pickEmoji}
-                      filter={(emoji): boolean =>
-                        search() !== "" ? emoji.name.includes(search()) : true
-                      }
-                    />
-                  </div>
-                </>
-              )}
-            </ul>
-          </div>
-          <div></div>
-          <button onClick={sendMessage} class="btn btn-ghost rounded-box">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M10 14l11 -11"></path>
-              <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
-            </svg>
-          </button>
-          <div id={"messageLength"} class="text-sm text-gray-500">
-            {text().length}/400
-          </div>
-        </div>
-      </form>
-    </section>
-  );
+                        <TextareaAutosize
+                            onKeyPress={(ev) => {
+                                if (ev.key === "Enter" && !ev.shiftKey) {
+                                    ev.preventDefault();
+                                    sendMessage().catch(console.error);
+                                } else if (ev.key === "Enter" && ev.shiftKey) {
+                                    ev.preventDefault();
+                                    setText(text() + "\n");
+                                }
+                            }}
+                            id="messageInput"
+                            placeholder="Type your message"
+                            class="input input-bordered w-full min-h-[50px] resize-none"
+                            onInput={(ev) => {
+                                let inputValue = ev.currentTarget.value;
+                                if (inputValue.length > 400) {
+                                    inputValue = inputValue.slice(0, 400);
+                                    setText(inputValue);
+                                }
+
+                                setText(ev.currentTarget.value);
+                            }}
+                            value={text()}
+                        />
+
+                        <div id={"messageLength"} class="text-sm text-gray-500 absolute bottom-2.5 right-1.5">
+                            {text().length}/400
+                        </div>
+                    </div>
+
+                        {!isMobile() && <Picker onEmojiSelect={handleEmojiSelect}/>}
+
+                        <button onClick={sendMessage} class="btn btn-ghost rounded-box">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                stroke-width="2"
+                                stroke="currentColor"
+                                fill="none"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M10 14l11 -11"></path>
+                                <path
+                                    d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                            </svg>
+                        </button>
+
+                    </div>
+            </form>
+        </section>
+);
 }
