@@ -16,6 +16,8 @@ import { pb } from "../utils/pocketbase";
 
 const Picker = lazy(() => import("./utils/Picker"));
 
+import { debounce } from "lodash";
+
 /**
  * Message interface represents the structure of a message in the application.
  *
@@ -80,6 +82,14 @@ export default function Room(): JSX.Element {
    * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
    */
   const [showLoadMore, setShowLoadMore] = createSignal(false);
+
+  /**
+   * `isMobile` is a state variable that indicates whether the current device is a mobile device.
+   * `setIsMobile` is the function to update the `isMobile` state.
+   *
+   * Initially, `isMobile` is set to true if the width of the window is less than or equal to 768px, false otherwise.
+   */
+  const [isMobile, setIsMobile] = createSignal(window.innerWidth <= 768);
 
   /**
    * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
@@ -177,10 +187,7 @@ export default function Room(): JSX.Element {
           data.record,
         )) as Message;
 
-        // Add the new message to the `messages` state
-        // @ts-ignore
         setMessages([newMessage, ...messages()]);
-        // Scroll the chat window to the bottom
         scrollToBottom();
 
         // If the user has granted permission, display a notification for the new message
@@ -217,6 +224,8 @@ export default function Room(): JSX.Element {
     const chat = document.getElementById("chat");
     if (chat) chat.scrollTop = chat.scrollHeight;
   }
+
+  const debouncedSetText = debounce(setText, 100);
 
   /**
    * Creates a message object from a record.
@@ -290,47 +299,46 @@ export default function Room(): JSX.Element {
     sendMessage().catch(console.error);
   };
 
+  /**
+   * This effect is responsible for managing the text input and its related UI updates.
+   */
   createEffect(() => {
     const length = text().length;
-    if (length > 400) {
-      setText(text().slice(0, 400));
-    }
+    if (length > 400) setText(text().slice(0, 400));
 
     const input = document.getElementById("messageInput");
-    if (input) {
-      input.focus();
-    }
+    input?.focus();
 
     const messageLength = document.getElementById("messageLength");
-    if (messageLength) {
-      messageLength.classList.remove("text-gray-500");
-      messageLength.classList.remove("text-warning");
-      if (length > 300 && length < 400) {
-        messageLength.classList.add("text-warning");
-      } else if (length >= 400) {
-        messageLength.classList.add("text-error");
-      } else {
-        messageLength.classList.add("text-gray-500");
-      }
-    }
+    messageLength?.classList.remove("text-gray-500", "text-warning");
+
+    const colorClass =
+      length >= 400
+        ? "text-error"
+        : length > 300
+          ? "text-warning"
+          : "text-gray-500";
+    messageLength?.classList.add(colorClass);
   });
 
+  /**
+   * Handles the selection of an emoji from the emoji picker.
+   *
+   * @param {string} emoji - The selected emoji.
+   */
   const handleEmojiSelect = (emoji: string) => {
     setText(text() + emoji);
   };
 
-  const [isMobile, setIsMobile] = createSignal(window.innerWidth <= 768);
-
+  /**
+   * This effect is responsible for handling window resize events.
+   */
   createEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    const updateIsMobile = () => setIsMobile(window.innerWidth <= 768);
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", updateIsMobile);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", updateIsMobile);
   });
 
   return (
@@ -400,7 +408,7 @@ export default function Room(): JSX.Element {
                   setText(inputValue);
                 }
 
-                setText(ev.currentTarget.value);
+                debouncedSetText(ev.currentTarget.value);
               }}
               value={text()}
             />
