@@ -21,22 +21,22 @@
 </div>
 
 <!-- TOC -->
-  * [About The Project](#about-the-project)
-    * [Built With](#built-with)
-  * [Getting Started](#getting-started)
-    * [Prerequisites (for development)](#prerequisites-for-development)
-    * [Installation (I assume you have a backend running)](#installation-i-assume-you-have-a-backend-running)
-      * [Using Docker](#using-docker)
-      * [Using Docker Compose](#using-docker-compose)
-      * [Using Devbox (recommended)](#using-devbox-recommended)
-  * [Architecture](#architecture)
-    * [Pages](#pages)
-    * [Components](#components)
-    * [Configuration](#configuration)
-  * [Roadmap](#roadmap)
-  * [Contact](#contact)
-<!-- TOC -->
 
+- [About The Project](#about-the-project)
+  - [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites (for development)](#prerequisites-for-development)
+  - [Installation (I assume you have a backend running)](#installation-i-assume-you-have-a-backend-running)
+    - [Using Docker](#using-docker)
+    - [Using Docker Compose](#using-docker-compose)
+    - [Using Devbox (recommended)](#using-devbox-recommended)
+- [Architecture](#architecture)
+  - [Pages](#pages)
+  - [Components](#components)
+  - [Configuration](#configuration)
+- [Roadmap](#roadmap)
+- [Contact](#contact)
+<!-- TOC -->
 
 <!-- ABOUT THE PROJECT -->
 
@@ -57,21 +57,19 @@ third-party providers such as Microsoft, Google, or Discord.
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for
 the acknowledgements section. Here are a few examples.
 
-* [![Astro][Astro.build]][Astro-url]
-* [![Solid][Solid.js]][Solid-url]
-* [![Tailwind][Tailwindcss]][Tailwind-url]
-* [![Daisyui][Daisyui.com]][Daisyui-url]
-* [![Docker][Docker.com]][Docker-url]
-* <a href="https://jetpack.io/devbox/docs/contributor-quickstart/">
-    <img
-        src="https://jetpack.io/img/devbox/shield_moon.svg"
-        alt="Built with Devbox"
-    />
-</a>
+- [![Astro][Astro.build]][Astro-url]
+- [![Solid][Solid.js]][Solid-url]
+- [![Tailwind][Tailwindcss]][Tailwind-url]
+- [![Daisyui][Daisyui.com]][Daisyui-url]
+- [![Docker][Docker.com]][Docker-url]
+- <a href="https://jetpack.io/devbox/docs/contributor-quickstart/">
+      <img
+          src="https://jetpack.io/img/devbox/shield_moon.svg"
+          alt="Built with Devbox"
+      />
+  </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 
@@ -81,12 +79,12 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites (for development)
 
-* Node.js (v18+)
-* Yarn (or npm or pnpm or whatever you want)
-* Docker (optional)
-* Docker Compose (optional)
-* A backend (see [Astrocket Backend](../backend))
-* Devbox (optional)
+- Node.js (v18+)
+- Yarn (or npm or pnpm or whatever you want)
+- Docker (optional)
+- Docker Compose (optional)
+- A backend (see [Astrocket Backend](../backend))
+- Devbox (optional)
 
 ### Installation (I assume you have a backend running)
 
@@ -108,9 +106,9 @@ Note: If you want to use docker or devbox, you can skip the following steps
 
 ```sh
 yarn install
-``` 
+```
 
-You can also use npm or pnpm 
+You can also use npm or pnpm
 
 If you get an error about the `sharp` package, you need to install the dependencies for your system. See
 the [sharp documentation](https://sharp.pixelplumbing.com/install#cross-platform) for more information.
@@ -120,7 +118,6 @@ Easy workaround for Linux:
 ```sh
 yarn add sharp --ignore-engines
 ```
-
 
 4. Launch the project
 
@@ -200,7 +197,6 @@ The components are located in the `src/components` folder.
 To configure the backend url, you can edit the [utils/pocketbase.ts](src/utils/pocketbase.ts) file.
 The main astro config is located in the [astro.config.mjs](astro.config.mjs) file.
 
-
 <!-- ROADMAP -->
 
 ## Roadmap
@@ -209,8 +205,8 @@ The main astro config is located in the [astro.config.mjs](astro.config.mjs) fil
 - [ ] Add Changelog
 - [ ] Add a way to change the theme
 - [ ] Internationalization
-    - [ ] French
-    - [ ] German
+  - [ ] French
+  - [ ] German
 - [ ] Emoji keyboard on desktop
 - [ ] Profile page (with avatar upload)
 - [ ] List of connected users
@@ -219,8 +215,6 @@ The main astro config is located in the [astro.config.mjs](astro.config.mjs) fil
 - [x] Lazy load old messages when scrolling up
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 
@@ -232,34 +226,20 @@ Project Link: [https://github.com/corentings/astrocket](https://github.com/coren
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 <!-- https://github.com/othneildrew/Best-README-Template/tree/master -->
 
 [product-screenshot]: public/landing.png
-
 [Astro.build]: https://img.shields.io/badge/Astro-0C1222?style=for-the-badge&logo=astro&logoColor=FDFDFE
-
 [Astro-url]: https://astro.build/
-
 [Solid.js]: https://img.shields.io/badge/Solid%20JS-2C4F7C?style=for-the-badge&logo=solid&logoColor=white
-
 [Solid-url]: https://www.solidjs.com/
-
 [Tailwindcss]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
-
 [Tailwind-url]: https://tailwindcss.com/
-
 [Daisyui.com]: https://img.shields.io/badge/daisyUI-1ad1a5?style=for-the-badge&logo=daisyui&logoColor=white
-
 [Daisyui-url]: https://daisyui.com/
-
 [Docker.com]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
-
 [Docker-url]: https://www.docker.com/
-
