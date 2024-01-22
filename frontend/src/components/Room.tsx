@@ -1,10 +1,19 @@
 /** @jsxImportSource solid-js */
 
-import { createSignal, JSX, lazy, onMount, Suspense } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  JSX,
+  lazy,
+  onMount,
+  Suspense,
+} from "solid-js";
 import TextareaAutosize from "solid-textarea-autosize";
 
 const Chat = lazy(() => import("./Chat"));
 
+import { Icon } from "@iconify-icon/solid";
+import { EmojiPicker } from "solid-emoji-picker";
 import { pb } from "../utils/pocketbase";
 
 /**
@@ -168,6 +177,8 @@ export default function Room(): JSX.Element {
           data.record,
         )) as Message;
 
+        console.log("New message | text:", newMessage.text);
+
         // Add the new message to the `messages` state
         // @ts-ignore
         setMessages([newMessage, ...messages()]);
@@ -256,7 +267,9 @@ export default function Room(): JSX.Element {
    * @async
    */
   const sendMessage = async () => {
-    if (!canSendMessage()) return;
+    if (!canSendMessage()) return; // If a message cannot be sent, return
+
+    console.log("Sending message | text:", text());
 
     setIsSending(true);
     const data = { content: text(), author: localStorage.getItem("authID") };
@@ -280,6 +293,39 @@ export default function Room(): JSX.Element {
     e.preventDefault();
     sendMessage().catch(console.error);
   };
+
+  createEffect(() => {
+    const length = text().length;
+    if (length > 400) {
+      setText(text().slice(0, 400));
+    }
+
+    const input = document.getElementById("messageInput");
+    if (input) {
+      input.focus();
+    }
+
+    const messageLength = document.getElementById("messageLength");
+    if (messageLength) {
+      messageLength.classList.remove("text-gray-500");
+      messageLength.classList.remove("text-warning");
+      if (length > 300 && length < 400) {
+        messageLength.classList.add("text-warning");
+      } else if (length >= 400) {
+        messageLength.classList.add("text-error");
+      } else {
+        messageLength.classList.add("text-gray-500");
+      }
+    }
+  });
+
+  function pickEmoji(emoji: { emoji: string }) {
+    setText(text() + emoji.emoji);
+    setShowEmojiPicker(false);
+  }
+
+  const [showEmojiPicker, setShowEmojiPicker] = createSignal(false);
+  const [search, setSearch] = createSignal("");
 
   return (
     <section class="py-6 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
@@ -344,11 +390,49 @@ export default function Room(): JSX.Element {
               let inputValue = ev.currentTarget.value;
               if (inputValue.length > 400) {
                 inputValue = inputValue.slice(0, 400);
+                setText(inputValue);
               }
-              setText(inputValue);
+
+              setText(ev.currentTarget.value);
             }}
             value={text()}
           />
+          <div class="dropdown dropdown-top dropdown-end">
+            <button
+              onClick={() => setShowEmojiPicker(!showEmojiPicker())}
+              class="btn btn-ghost rounded-box"
+            >
+              <Icon
+                icon="twemoji:grinning-face-with-smiling-eyes"
+                class="text-2xl"
+              />
+            </button>
+            <ul
+              tabIndex="0"
+              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box overflow-auto text-xl w-32 h-32 md:w-64 md:h-64"
+            >
+              {showEmojiPicker() && (
+                <>
+                  <div class="flex flex-col">
+                    <input
+                      type="text"
+                      class="input input-bordered w-full p-2 rounded-lg"
+                      placeholder="Search emoji"
+                      onInput={(ev) => setSearch(ev.currentTarget.value)}
+                      value={search()}
+                    />
+                    <EmojiPicker
+                      onEmojiClick={pickEmoji}
+                      filter={(emoji): boolean =>
+                        search() !== "" ? emoji.name.includes(search()) : true
+                      }
+                    />
+                  </div>
+                </>
+              )}
+            </ul>
+          </div>
+          <div></div>
           <button onClick={sendMessage} class="btn btn-ghost rounded-box">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -367,9 +451,7 @@ export default function Room(): JSX.Element {
               <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
             </svg>
           </button>
-          <div
-            class={`text-sm text-gray-500 ${text().length > 400 ? "text-error" : ""}`}
-          >
+          <div id={"messageLength"} class="text-sm text-gray-500">
             {text().length}/400
           </div>
         </div>
