@@ -1,20 +1,22 @@
 /** @jsxImportSource solid-js */
 
 import {
-  createEffect,
-  createSignal,
-  JSX,
-  lazy,
-  onMount,
-  Suspense,
+    createEffect,
+    createSignal,
+    JSX,
+    lazy,
+    onMount,
+    Suspense
 } from "solid-js";
 import TextareaAutosize from "solid-textarea-autosize";
 
 const Chat = lazy(() => import("./Chat"));
 
-import { Icon } from "@iconify-icon/solid";
-import { EmojiPicker } from "solid-emoji-picker";
 import { pb } from "../utils/pocketbase";
+
+const Picker = lazy(() => import("./utils/Picker"));
+
+import { debounce } from "lodash";
 
 /**
  * Message interface represents the structure of a message in the application.
@@ -80,6 +82,14 @@ export default function Room(): JSX.Element {
    * Initially, `showLoadMore` is set to true, indicating that the "Load More" button should be displayed.
    */
   const [showLoadMore, setShowLoadMore] = createSignal(false);
+
+  /**
+   * `isMobile` is a state variable that indicates whether the current device is a mobile device.
+   * `setIsMobile` is the function to update the `isMobile` state.
+   *
+   * Initially, `isMobile` is set to true if the width of the window is less than or equal to 768px, false otherwise.
+   */
+  const [isMobile, setIsMobile] = createSignal(window.innerWidth <= 768);
 
   /**
    * `fetchMoreMessages` is an asynchronous function that fetches older messages from the server.
@@ -177,12 +187,7 @@ export default function Room(): JSX.Element {
           data.record,
         )) as Message;
 
-        console.log("New message | text:", newMessage.text);
-
-        // Add the new message to the `messages` state
-        // @ts-ignore
         setMessages([newMessage, ...messages()]);
-        // Scroll the chat window to the bottom
         scrollToBottom();
 
         // If the user has granted permission, display a notification for the new message
@@ -219,6 +224,8 @@ export default function Room(): JSX.Element {
     const chat = document.getElementById("chat");
     if (chat) chat.scrollTop = chat.scrollHeight;
   }
+
+  const debouncedSetText = debounce(setText, 100);
 
   /**
    * Creates a message object from a record.
@@ -269,8 +276,6 @@ export default function Room(): JSX.Element {
   const sendMessage = async () => {
     if (!canSendMessage()) return; // If a message cannot be sent, return
 
-    console.log("Sending message | text:", text());
-
     setIsSending(true);
     const data = { content: text(), author: localStorage.getItem("authID") };
 
@@ -294,41 +299,50 @@ export default function Room(): JSX.Element {
     sendMessage().catch(console.error);
   };
 
+  /**
+   * This effect is responsible for managing the text input and its related UI updates.
+   */
   createEffect(() => {
     const length = text().length;
-    if (length > 400) {
-      setText(text().slice(0, 400));
-    }
+    if (length > 400) setText(text().slice(0, 400));
 
     const input = document.getElementById("messageInput");
-    if (input) {
-      input.focus();
-    }
+    input?.focus();
 
     const messageLength = document.getElementById("messageLength");
-    if (messageLength) {
-      messageLength.classList.remove("text-gray-500");
-      messageLength.classList.remove("text-warning");
-      if (length > 300 && length < 400) {
-        messageLength.classList.add("text-warning");
-      } else if (length >= 400) {
-        messageLength.classList.add("text-error");
-      } else {
-        messageLength.classList.add("text-gray-500");
-      }
-    }
+    messageLength?.classList.remove("text-gray-500", "text-warning");
+
+    const colorClass =
+      length >= 400
+        ? "text-error"
+        : length > 300
+          ? "text-warning"
+          : "text-gray-500";
+    messageLength?.classList.add(colorClass);
   });
 
-  function pickEmoji(emoji: { emoji: string }) {
-    setText(text() + emoji.emoji);
-    setShowEmojiPicker(false);
-  }
+  /**
+   * Handles the selection of an emoji from the emoji picker.
+   *
+   * @param {string} emoji - The selected emoji.
+   */
+  const handleEmojiSelect = (emoji: string) => {
+    setText(text() + emoji);
+  };
 
-  const [showEmojiPicker, setShowEmojiPicker] = createSignal(false);
-  const [search, setSearch] = createSignal("");
+  /**
+   * This effect is responsible for handling window resize events.
+   */
+  createEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.innerWidth <= 768);
+
+    window.addEventListener("resize", updateIsMobile);
+
+    return () => window.removeEventListener("resize", updateIsMobile);
+  });
 
   return (
-    <section class="py-6 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
+    <section class="py-6 flex flex-col max-w-7xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
       <div
         class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
         id="chat"
@@ -373,66 +387,42 @@ export default function Room(): JSX.Element {
       </div>
       <form class="form-control basis-2/10" onSubmit={handleSubmit}>
         <div class="input-group w-full flex flex-row">
-          <TextareaAutosize
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter" && !ev.shiftKey) {
-                ev.preventDefault();
-                sendMessage().catch(console.error);
-              } else if (ev.key === "Enter" && ev.shiftKey) {
-                ev.preventDefault();
-                setText(text() + "\n");
-              }
-            }}
-            id="messageInput"
-            placeholder="Type your message"
-            class="input input-bordered w-[90%] min-h-[50px] resize-none"
-            onInput={(ev) => {
-              let inputValue = ev.currentTarget.value;
-              if (inputValue.length > 400) {
-                inputValue = inputValue.slice(0, 400);
-                setText(inputValue);
-              }
+          <div class="relative w-[90%]">
+            <TextareaAutosize
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter" && !ev.shiftKey) {
+                  ev.preventDefault();
+                  sendMessage().catch(console.error);
+                } else if (ev.key === "Enter" && ev.shiftKey) {
+                  ev.preventDefault();
+                  setText(text() + "\n");
+                }
+              }}
+              id="messageInput"
+              placeholder="Type your message"
+              class="input input-bordered w-full min-h-[50px] resize-none"
+              onInput={(ev) => {
+                let inputValue = ev.currentTarget.value;
+                if (inputValue.length > 400) {
+                  inputValue = inputValue.slice(0, 400);
+                  setText(inputValue);
+                }
 
-              setText(ev.currentTarget.value);
-            }}
-            value={text()}
-          />
-          <div class="dropdown dropdown-top dropdown-end">
-            <button
-              onClick={() => setShowEmojiPicker(!showEmojiPicker())}
-              class="btn btn-ghost rounded-box"
+                debouncedSetText(ev.currentTarget.value);
+              }}
+              value={text()}
+            />
+
+            <div
+              id={"messageLength"}
+              class="text-sm text-gray-500 absolute bottom-2.5 right-1.5"
             >
-              <Icon
-                icon="twemoji:grinning-face-with-smiling-eyes"
-                class="text-2xl"
-              />
-            </button>
-            <ul
-              tabIndex="0"
-              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box overflow-auto text-xl w-32 h-32 md:w-64 md:h-64"
-            >
-              {showEmojiPicker() && (
-                <>
-                  <div class="flex flex-col">
-                    <input
-                      type="text"
-                      class="input input-bordered w-full p-2 rounded-lg"
-                      placeholder="Search emoji"
-                      onInput={(ev) => setSearch(ev.currentTarget.value)}
-                      value={search()}
-                    />
-                    <EmojiPicker
-                      onEmojiClick={pickEmoji}
-                      filter={(emoji): boolean =>
-                        search() !== "" ? emoji.name.includes(search()) : true
-                      }
-                    />
-                  </div>
-                </>
-              )}
-            </ul>
+              {text().length}/400
+            </div>
           </div>
-          <div></div>
+
+          {!isMobile() && <Picker onEmojiSelect={handleEmojiSelect} />}
+
           <button onClick={sendMessage} class="btn btn-ghost rounded-box">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -451,9 +441,6 @@ export default function Room(): JSX.Element {
               <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
             </svg>
           </button>
-          <div id={"messageLength"} class="text-sm text-gray-500">
-            {text().length}/400
-          </div>
         </div>
       </form>
     </section>
