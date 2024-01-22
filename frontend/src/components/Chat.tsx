@@ -4,6 +4,8 @@ import {createSignal, onMount} from "solid-js";
 import type {Message} from "./Room";
 import {SolidMarkdown} from "solid-markdown";
 import remarkGfm from "remark-gfm";
+import remarkGemoji from "remark-gemoji";
+import remarkDirective from "remark-directive";
 
 
 export default function Chat(message: Message) {
@@ -25,7 +27,7 @@ export default function Chat(message: Message) {
                 </div>
             </div>
             <div class="chat-bubble chat-bubble-neutral break-words">
-                <SolidMarkdown remarkPlugins={[remarkGfm]} children={message.text}/>
+                <SolidMarkdown remarkPlugins={[remarkGfm, remarkGemoji]} children={message.text}/>
 
             </div>
             <div class="chat-footer opacity-50">
