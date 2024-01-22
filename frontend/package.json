@@ -19,6 +19,7 @@
     "@astrojs/sitemap": "3.0.5",
     "@astrojs/solid-js": "^4.0.1",
     "@astrojs/tailwind": "5.1.0",
+    "@emoji-mart/data": "^1.1.2",
     "@iconify-icon/solid": "^1.0.5",
     "@nanostores/solid": "^0.4.2",
     "@solidjs/router": "^0.10.9",
@@ -40,10 +41,12 @@
     "remark-gfm": "^4.0.0",
     "rollup": "^4.9.6",
     "sharp": "^0.33.2",
+    "solid-emoji-picker": "^0.2.1",
     "solid-js": "^1.8.11",
     "solid-markdown": "^2.0.0",
     "solid-textarea-autosize": "^0.0.5",
     "tailwindcss": "^3.4.1",
+    "twemoji": "^14.0.2",
     "vite": "5.0.12"
   },
   "devDependencies": {

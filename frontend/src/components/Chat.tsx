@@ -5,7 +5,6 @@ import type {Message} from "./Room";
 import {SolidMarkdown} from "solid-markdown";
 import remarkGfm from "remark-gfm";
 import remarkGemoji from "remark-gemoji";
-import remarkDirective from "remark-directive";
 
 
 export default function Chat(message: Message) {

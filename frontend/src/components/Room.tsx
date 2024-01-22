@@ -1,11 +1,14 @@
 /** @jsxImportSource solid-js */
 
-import { createEffect, createSignal, JSX, lazy, onMount, Suspense } from "solid-js";
+import {createEffect, createSignal, JSX, lazy, onMount, Suspense} from "solid-js";
 import TextareaAutosize from "solid-textarea-autosize";
 
 const Chat = lazy(() => import("./Chat"));
 
-import { pb } from "../utils/pocketbase";
+
+import {pb} from "../utils/pocketbase";
+import {Icon} from "@iconify-icon/solid";
+import {EmojiPicker} from "solid-emoji-picker";
 
 /**
  * Message interface represents the structure of a message in the application.
@@ -310,6 +313,15 @@ export default function Room(): JSX.Element {
         }
     })
 
+
+    function pickEmoji(emoji: { emoji: string; }) {
+        setText(text() + emoji.emoji);
+        setShowEmojiPicker(false);
+    }
+
+    const [showEmojiPicker, setShowEmojiPicker] = createSignal(false);
+    const [search, setSearch] = createSignal("");
+
     return (
         <section class="py-6 flex flex-col max-w-6xl mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow">
             <div
@@ -381,6 +393,33 @@ export default function Room(): JSX.Element {
                         }}
                         value={text()}
                     />
+                    <div class="dropdown dropdown-top dropdown-end">
+                        <button onClick={() => setShowEmojiPicker(!showEmojiPicker())}
+                                class="btn btn-ghost rounded-box"><Icon icon="twemoji:grinning-face-with-smiling-eyes"
+                                                                        class="text-2xl"/>
+                        </button>
+                        <ul tabIndex="0"
+                            class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box overflow-auto text-xl w-32 h-32 md:w-64 md:h-64">
+
+                            {showEmojiPicker() && (
+                                <>
+                                    <div class="flex flex-col">
+                                        <input type="text" class="input input-bordered w-full p-2 rounded-lg"
+                                               placeholder="Search emoji"
+                                               onInput={(ev) => setSearch(ev.currentTarget.value)}
+                                               value={search()}/>
+                                        <EmojiPicker
+                                            onEmojiClick={pickEmoji}
+                                            filter={(emoji): boolean => (search() !== '' ? emoji.name.includes(search()) : true)}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </ul>
+                    </div>
+                    <div>
+
+                    </div>
                     <button onClick={sendMessage} class="btn btn-ghost rounded-box">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
