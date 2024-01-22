@@ -62,6 +62,12 @@ the acknowledgements section. Here are a few examples.
 * [![Tailwind][Tailwindcss]][Tailwind-url]
 * [![Daisyui][Daisyui.com]][Daisyui-url]
 * [![Docker][Docker.com]][Docker-url]
+* <a href="https://jetpack.io/devbox/docs/contributor-quickstart/">
+    <img
+        src="https://jetpack.io/img/devbox/shield_moon.svg"
+        alt="Built with Devbox"
+    />
+</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
