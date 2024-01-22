@@ -76,7 +76,8 @@ Keep in mind that if you remove the data, you will lose all the messages and use
 If for some reason docker doesn't load the default data, you can load copy the data from `backend/pb_data` to `data` and
 restart the containers.
 
-The default admin user is `admin@corentings.dev` and the password is `admin123456789`. I recommend you to change the admin password as soon as possible.
+The default admin user is `admin@corentings.dev` and the password is `admin123456789`. I recommend you to change the
+admin password as soon as possible.
 
 ## Demo
 
@@ -85,6 +86,14 @@ You can access the demo [here](https://astrocket.corentings.dev).
 You can login using the following credentials:
 username: `demo`
 password: `demo123456789`
+
+## Tests
+
+A list of tests can be found [here](documentation/tests.md).
+
+## Features
+
+A list of features can be found [here](documentation/features.md).
 
 ## Disclaimer
 
