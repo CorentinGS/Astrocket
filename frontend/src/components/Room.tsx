@@ -1,11 +1,11 @@
 /** @jsxImportSource solid-js */
 
-import {createEffect, createSignal, JSX, lazy, onMount, Suspense} from "solid-js";
+import { createEffect, createSignal, JSX, lazy, onMount, Suspense } from "solid-js";
 import TextareaAutosize from "solid-textarea-autosize";
 
 const Chat = lazy(() => import("./Chat"));
 
-import {pb} from "../utils/pocketbase";
+import { pb } from "../utils/pocketbase";
 
 /**
  * Message interface represents the structure of a message in the application.
@@ -168,6 +168,8 @@ export default function Room(): JSX.Element {
                     data.record,
                 )) as Message;
 
+                console.log("New message | text:", newMessage.text);
+
                 // Add the new message to the `messages` state
                 // @ts-ignore
                 setMessages([newMessage, ...messages()]);
@@ -258,7 +260,7 @@ export default function Room(): JSX.Element {
     const sendMessage = async () => {
         if (!canSendMessage()) return; // If a message cannot be sent, return
 
-
+        console.log("Sending message | text:", text());
 
         setIsSending(true);
         const data = {content: text(), author: localStorage.getItem("authID")};
@@ -284,8 +286,6 @@ export default function Room(): JSX.Element {
     };
 
     createEffect(() => {
-
-        console.log("text", text());
         const length = text().length;
         if (length > 400) {
             setText(text().slice(0, 400));

@@ -1,8 +1,8 @@
 /** @jsxImportSource solid-js */
 
-import {Icon} from "@iconify-icon/solid";
-import {createSignal, JSX, onMount} from "solid-js";
-import {pb} from "../utils/pocketbase";
+import { Icon } from "@iconify-icon/solid";
+import { createSignal, JSX, onMount } from "solid-js";
+import { pb } from "../utils/pocketbase";
 
 /**
  * Login component

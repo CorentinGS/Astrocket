@@ -36,9 +36,11 @@
     "daisyui": "^4.6.0",
     "nanostores": "^0.9.5",
     "pocketbase": "^0.20.3",
+    "remark-gfm": "^4.0.0",
     "rollup": "^4.9.6",
     "sharp": "^0.33.2",
     "solid-js": "^1.8.11",
+    "solid-markdown": "^2.0.0",
     "solid-textarea-autosize": "^0.0.5",
     "tailwindcss": "^3.4.1",
     "vite": "5.0.12"
