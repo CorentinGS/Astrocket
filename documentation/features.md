@@ -30,13 +30,13 @@
   the local storage/cookies
 - [x] When a line break is added, the text area should grow accordingly.
 - [ ] When you click on the "load more" button, the scroll position should be preserved.
-- [ ] When a line break is added, it should be preserved when you send the message.
+- [x] When a line break is added, it should be preserved when you send the message.
 - [ ] When you receive a message, a new message notification should appear and when you click on it, you should be
   scrolled to the message.
 - [ ] When you receive a message, the scroll position should be preserved.
 - [ ] When you receive a message, and are scrolled to the bottom, the scroll position should continue at the bottom.
-- [ ] When you add markdown to the message, it should be rendered accordingly.
-- [ ] When you add markdown to the message, it should be preserved when you send the message.
+- [x] When you add markdown to the message, it should be rendered accordingly.
+- [x] When you add markdown to the message, it should be preserved when you send the message.
 - [ ] When a new user joins the room, a notification should appear.
 - [ ] A user should be able to see who is online.
 - [ ] When a user goes offline, a notification should appear.
@@ -45,7 +45,7 @@
 - [ ] When you click on a message, you should be able to delete it.
 - [ ] When you click on a message, you should be able to quote it.
 - [ ] When you click on a message, you should be able to react to it.
-- [ ] Add an emoji picker to the message input.
+- [x] Add an emoji picker to the message input.
 
 ### Profile Page
 
@@ -66,3 +66,9 @@
 - [ ] Send images and render them.
 - [ ] Send files.
 
+## Backend
+
+### Endpoints
+
+- [ ] `GET /api/health` - Health check endpoint.
+- [ ] `GET /api/connected` - Get all the connected users.
