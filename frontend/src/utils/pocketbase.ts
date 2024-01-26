@@ -14,3 +14,16 @@ pb.authStore.onChange((auth) => {
   localStorage.setItem("auth", JSON.stringify(pb.authStore.model));
   localStorage.setItem("authID", <string>pb.authStore.model?.id);
 });
+
+// Get connected clients from the server
+export const getConnectedClients = async () => {
+    const clients = await fetch(`${pbURI}/clients`).then((res) => res.json());
+    console.log(clients);
+
+    for (const client of clients) {
+        const record = await pb.collection("users").getOne(client.id);
+        console.log(record);
+    }
+
+    return clients;
+}
