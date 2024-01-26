@@ -17,13 +17,13 @@ pb.authStore.onChange((auth) => {
 
 // Get connected clients from the server
 export const getConnectedClients = async () => {
-    const clients = await fetch(`${pbURI}/clients`).then((res) => res.json());
-    console.log(clients);
+  const clients = await fetch(`${pbURI}/clients`).then((res) => res.json());
 
-    for (const client of clients) {
-        const record = await pb.collection("users").getOne(client.id);
-        console.log(record);
-    }
+  const records = [];
+  for (const client of clients) {
+    const record = await pb.collection("users").getOne(client.id);
+    records.push(record);
+  }
 
-    return clients;
-}
+  return records;
+};

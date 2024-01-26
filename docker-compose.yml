@@ -3,7 +3,9 @@ version: "3.8"
 services:
   backend:
     restart: unless-stopped
-    image: ghcr.io/corentings/astrocket/backend:v0.1.9
+    build:
+        context: ./backend
+        dockerfile: Dockerfile
     ports:
       - "8090:8080"
     volumes:

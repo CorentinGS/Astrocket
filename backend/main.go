@@ -17,11 +17,19 @@ func main() {
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		// Define a GET route for the "/clients" endpoint.
 		e.Router.GET("/clients", func(c echo.Context) error {
+			defer func() {
+				if r := recover(); r != nil {
+					log.Printf("Recovered from panic: %v", r)
+					_ = c.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal Server Error"})
+				}
+			}()
+
 			clients := app.SubscriptionsBroker().Clients()
 			users := make([]map[string]interface{}, 0, len(clients))
 
 			for _, client := range clients {
-				if record := client.Get(apis.ContextAuthRecordKey).(*models.Record); record != nil {
+				record, ok := client.Get(apis.ContextAuthRecordKey).(*models.Record)
+				if ok {
 					users = append(users, map[string]interface{}{
 						"id":   record.Get("id"),
 						"name": record.Get("name"),
