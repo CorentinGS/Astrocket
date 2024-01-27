@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/json"
+	"fmt"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -8,6 +11,7 @@ import (
 	"github.com/pocketbase/pocketbase/models"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func main() {
@@ -42,6 +46,23 @@ func main() {
 			for _, user := range users {
 				usersSlice = append(usersSlice, user)
 			}
+
+			// Compute the ETag for the response.
+			jsonData, _ := json.Marshal(usersSlice)
+			eTag := fmt.Sprintf("%x", md5.Sum(jsonData))
+
+			// Check the If-None-Match header.
+			if match := c.Request().Header.Get("If-None-Match"); match != "" {
+				log.Printf("If-None-Match: %s", match)
+				if strings.Contains(match, eTag) {
+					log.Printf("ETag matches: %s", eTag)
+					// The ETag matches, return a 304 Not Modified status.
+					return c.NoContent(http.StatusNotModified)
+				}
+			}
+
+			// Set the ETag header.
+			c.Response().Header().Set("ETag", eTag)
 
 			// Return the users slice as a JSON response with a status of 200 OK.
 			return c.JSON(http.StatusOK, usersSlice)

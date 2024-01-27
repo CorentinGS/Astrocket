@@ -16,8 +16,6 @@ import {pb} from "../utils/pocketbase";
 
 const Picker = lazy(() => import("./utils/Picker"));
 
-import {getConnectedClients} from "../utils/pocketbase";
-
 import {debounce} from "lodash";
 import Avatar from "./index/Avatar";
 
@@ -218,21 +216,6 @@ export default function Room(): JSX.Element {
             }
         });
 
-        const clients = await getConnectedClients();
-        setConnectedClients(clients);
-
-        // Start polling for connected clients every 5 seconds
-        const intervalId = setInterval(async () => {
-            const updatedClients = await getConnectedClients();
-            if (updatedClients.length !== connectedClients().length || updatedClients.some((client) => !connectedClients().includes(client))) {
-                setConnectedClients(updatedClients);
-            }
-        }, 5000);
-
-        // Clear the interval when the component is unmounted
-        onCleanup(() => {
-            clearInterval(intervalId);
-        });
     });
 
     /**
@@ -362,140 +345,110 @@ export default function Room(): JSX.Element {
         return () => window.removeEventListener("resize", updateIsMobile);
     });
 
-    let avatarUrl;
     return (
-        <section class={"grid md:grid-cols-5"}>
-            <section
-                class="py-6 flex flex-col w-full mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow md:col-span-4">
-                <div
-                    class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
-                    id="chat"
-                >
-                    <Suspense
-                        fallback={
-                            <div class="flex items-center justify-center h-full">
-                                <p class="text-base-content/50">Loading the messages...</p>
-                                <span class="loading loading-dots loading-sm"></span>
-                            </div>
-                        }
-                    >
-                        {messages().length > 0 ? (
-                            <>
-                                {messages().map((message) => (
-                                    <>
-                                        <Chat
-                                            id={"message-" + message.id}
-                                            user={message.user}
-                                            text={message.text}
-                                            createdAt={message.createdAt}
-                                        />
-                                    </>
-                                ))}
-                                {showLoadMore() ? (
-                                    <button
-                                        onClick={fetchMoreMessages}
-                                        class="btn btn-ghost rounded-box"
-                                    >
-                                        Load More
-                                    </button>
-                                ) : null}
-                            </>
-                        ) : (
-                            <div class="flex items-center justify-center h-full">
-                                <p class="text-base-content/50">
-                                    Welcome to Astrocket! Start a conversation here.
-                                </p>
-                            </div>
-                        )}
-                    </Suspense>
-                </div>
-                <form class="form-control basis-2/10" onSubmit={handleSubmit}>
-                    <div class="input-group w-full flex flex-row">
-                        <div class="relative w-[90%]">
-                            <TextareaAutosize
-                                onKeyPress={(ev) => {
-                                    if (ev.key === "Enter" && !ev.shiftKey) {
-                                        ev.preventDefault();
-                                        sendMessage().catch(console.error);
-                                    } else if (ev.key === "Enter" && ev.shiftKey) {
-                                        ev.preventDefault();
-                                        setText(text() + "\n");
-                                    }
-                                }}
-                                id="messageInput"
-                                placeholder="Type your message"
-                                class="input input-bordered w-full min-h-[50px] resize-none"
-                                onInput={(ev) => {
-                                    let inputValue = ev.currentTarget.value;
-                                    if (inputValue.length > 400) {
-                                        inputValue = inputValue.slice(0, 400);
-                                        setText(inputValue);
-                                    }
-
-                                    debouncedSetText(ev.currentTarget.value);
-                                }}
-                                value={text()}
-                            />
-
-                            <div
-                                id={"messageLength"}
-                                class="text-sm text-gray-500 absolute bottom-2.5 right-1.5"
-                            >
-                                {text().length}/400
-                            </div>
+        <section
+            class="py-6 flex flex-col w-full mx-auto px-4 sm:px-6 h-[calc(100vh-5rem)] flex-grow md:col-span-4">
+            <div
+                class="overflow-y-scroll overscroll-contain rounded-box basis-7/10 flex flex-col-reverse flex-grow"
+                id="chat"
+            >
+                <Suspense
+                    fallback={
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-base-content/50">Loading the messages...</p>
+                            <span class="loading loading-dots loading-sm"></span>
                         </div>
-
-                        {!isMobile() && <Picker onEmojiSelect={handleEmojiSelect}/>}
-
-                        <button onClick={sendMessage} class="btn btn-ghost rounded-box">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                stroke-width="2"
-                                stroke="currentColor"
-                                fill="none"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M10 14l11 -11"></path>
-                                <path
-                                    d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </section>
-            <section class="bg-base-200 hidden md:block">
-                <h2 class="text-xl font-bold pt-4 text-center">Connected Users</h2>
-                <span class={'divider'}></span>
-                <ul>
-                    {connectedClients().map(
-                        (client) => (
-                            (avatarUrl = pb.getFileUrl(client, client.avatar, {
-                                thumb: "64x64",
-                            })),
-                                (
-                                    <li class="flex items-center space-x-2 px-2">
-                                        <Suspense fallback={<div>Loading...</div>}>
-                                            {avatarUrl && (
-                                                <div
-                                                    class={"btn btn-ghost btn-disabled btn-circle avatar"}
-                                                >
-                                                    <Avatar avatarUrl={avatarUrl}/>
-                                                </div>
-                                            )}
-                                        </Suspense>
-                                        <span>{client.name}</span>
-                                    </li>
-                                )
-                        ),
+                    }
+                >
+                    {messages().length > 0 ? (
+                        <>
+                            {messages().map((message) => (
+                                <>
+                                    <Chat
+                                        id={"message-" + message.id}
+                                        user={message.user}
+                                        text={message.text}
+                                        createdAt={message.createdAt}
+                                    />
+                                </>
+                            ))}
+                            {showLoadMore() ? (
+                                <button
+                                    onClick={fetchMoreMessages}
+                                    class="btn btn-ghost rounded-box"
+                                >
+                                    Load More
+                                </button>
+                            ) : null}
+                        </>
+                    ) : (
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-base-content/50">
+                                Welcome to Astrocket! Start a conversation here.
+                            </p>
+                        </div>
                     )}
-                </ul>
-            </section>
+                </Suspense>
+            </div>
+            <form class="form-control basis-2/10" onSubmit={handleSubmit}>
+                <div class="input-group w-full flex flex-row">
+                    <div class="relative w-[90%]">
+                        <TextareaAutosize
+                            onKeyPress={(ev) => {
+                                if (ev.key === "Enter" && !ev.shiftKey) {
+                                    ev.preventDefault();
+                                    sendMessage().catch(console.error);
+                                } else if (ev.key === "Enter" && ev.shiftKey) {
+                                    ev.preventDefault();
+                                    setText(text() + "\n");
+                                }
+                            }}
+                            id="messageInput"
+                            placeholder="Type your message"
+                            class="input input-bordered w-full min-h-[50px] resize-none"
+                            onInput={(ev) => {
+                                let inputValue = ev.currentTarget.value;
+                                if (inputValue.length > 400) {
+                                    inputValue = inputValue.slice(0, 400);
+                                    setText(inputValue);
+                                }
+
+                                debouncedSetText(ev.currentTarget.value);
+                            }}
+                            value={text()}
+                        />
+
+                        <div
+                            id={"messageLength"}
+                            class="text-sm text-gray-500 absolute bottom-2.5 right-1.5"
+                        >
+                            {text().length}/400
+                        </div>
+                    </div>
+
+                    {!isMobile() && <Picker onEmojiSelect={handleEmojiSelect}/>}
+
+                    <button onClick={sendMessage} class="btn btn-ghost rounded-box">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M10 14l11 -11"></path>
+                            <path
+                                d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
         </section>
     );
 }
