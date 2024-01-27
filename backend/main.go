@@ -25,19 +25,26 @@ func main() {
 			}()
 
 			clients := app.SubscriptionsBroker().Clients()
-			users := make([]map[string]interface{}, 0, len(clients))
+			users := make(map[string]map[string]interface{})
 
 			for _, client := range clients {
 				record, ok := client.Get(apis.ContextAuthRecordKey).(*models.Record)
 				if ok {
-					users = append(users, map[string]interface{}{
-						"id":   record.Get("id"),
+					id := record.Get("id").(string)
+					users[id] = map[string]interface{}{
+						"id":   id,
 						"name": record.Get("name"),
-					})
+					}
 				}
 			}
+			// Convert the users map to a slice.
+			usersSlice := make([]map[string]interface{}, 0, len(users))
+			for _, user := range users {
+				usersSlice = append(usersSlice, user)
+			}
+
 			// Return the users slice as a JSON response with a status of 200 OK.
-			return c.JSON(http.StatusOK, users)
+			return c.JSON(http.StatusOK, usersSlice)
 		})
 
 		// Return nil to indicate that no error occurred.
