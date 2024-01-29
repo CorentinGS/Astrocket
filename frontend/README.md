@@ -188,7 +188,7 @@ The components are located in the `src/components` folder.
 - `Login.tsx` is the login component, it's used to display the login form and handle the login process using oauth2
 - `Room.tsx` is the room component, it's used to display the room and handle real-time messages.
 - `Message.tsx` is the message component, it's used to display a message in the room.
-- `Avatar.tsx` is the avatar component, it's used to display an avatar.
+- `AvatarDropdown.tsx` is the avatar component, it's used to display an avatar.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

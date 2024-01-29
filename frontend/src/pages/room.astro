@@ -2,9 +2,13 @@
 import Room from "../components/Room.tsx";
 import LoginHeader from "../components/index/LoginHeader.astro";
 import RoomLayout from "../layouts/RoomLayout.astro";
+import ConnectedClients from "../components/ConnectedClients";
 ---
 
 <RoomLayout title="Astrocket">
     <LoginHeader/>
-    <Room client:only="solid-js"/>
+    <section class="grid md:grid-cols-5">
+        <Room client:only="solid-js"/>
+        <ConnectedClients client:load/>
+    </section>
 </RoomLayout>

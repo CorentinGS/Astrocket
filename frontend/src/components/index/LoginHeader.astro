@@ -1,6 +1,6 @@
 ---
 import Logo from "./Logo.astro";
-import Avatar from "./Avatar.tsx";
+import AvatarDropdown from "./AvatarDropdown.tsx";
 ---
 
 <section class="navbar md:px-5">
@@ -10,6 +10,6 @@ import Avatar from "./Avatar.tsx";
         </a>
     </div>
     <div class="navbar-end">
-        <Avatar client:idle/>
+        <AvatarDropdown client:idle/>
     </div>
 </section>

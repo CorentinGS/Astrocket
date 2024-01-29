@@ -36,7 +36,7 @@ Astro</a> + <a href="https://pocketbase.io" target="_blank">Pocketbase</a>.</h4>
   <a href="#license">License</a>
 </p>
 
-![screenshot](documentation/assets/astrocket.gif)
+![screenshot](docs_phase3/assets/astrocket.gif)
 
 ## Key Features
 
@@ -89,11 +89,11 @@ password: `demo123456789`
 
 ## Tests
 
-A list of tests can be found [here](documentation/tests.md).
+A list of tests can be found [here](docs_phase3/tests.md).
 
 ## Features
 
-A list of features can be found [here](documentation/features.md).
+A list of features can be found [here](docs_phase3/features.md).
 
 ## Disclaimer
 

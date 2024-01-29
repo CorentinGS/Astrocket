@@ -3,7 +3,7 @@ version: "3.8"
 services:
   backend:
     restart: unless-stopped
-    image: ghcr.io/corentings/astrocket/backend:v0.1.9
+    image: ghcr.io/corentings/astrocket/backend:v0.3.0-rc.1
     ports:
       - "8090:8080"
     volumes:
@@ -11,6 +11,12 @@ services:
       - ./migrations:/pb/pb_migrations
     networks:
       - app
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
   frontend:
     restart: unless-stopped
     image: ghcr.io/corentings/astrocket/frontend:v0.2.1
@@ -20,7 +26,7 @@ services:
       - app
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:4321 || exit 1
-      interval: 30s
+      interval: 20s
       timeout: 10s
       retries: 3
       start_period: 10s
