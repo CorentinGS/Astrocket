@@ -94,8 +94,13 @@ func setupRoutes(app *pocketbase.PocketBase) {
 			return c.JSON(http.StatusOK, usersSlice)
 		})
 
+		e.Router.GET("/health", func(c echo.Context) error {
+			return c.NoContent(http.StatusOK)
+		})
+
 		return nil
 	})
+
 }
 
 func startApp(app *pocketbase.PocketBase) {
