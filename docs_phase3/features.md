@@ -38,7 +38,7 @@
 - [x] When you add markdown to the message, it should be rendered accordingly.
 - [x] When you add markdown to the message, it should be preserved when you send the message.
 - [ ] When a new user joins the room, a notification should appear.
-- [ ] A user should be able to see who is online.
+- [x] A user should be able to see who is online.
 - [ ] When a user goes offline, a notification should appear.
 - [ ] When you click on a message, you should be able to reply to it.
 - [ ] When you click on a message, you should be able to edit it.
@@ -70,5 +70,5 @@
 
 ### Endpoints
 
-- [ ] `GET /api/health` - Health check endpoint.
-- [ ] `GET /api/connected` - Get all the connected users.
+- [x] `GET /api/health` - Health check endpoint.
+- [x] `GET /api/connected` - Get all the connected users.
