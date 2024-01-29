@@ -46,6 +46,15 @@ const getConnectedClients = async () => {
         const record = await pb.collection("users").getOne(client.id);
         records.push(record);
     }
+
+    // sort by name
+    records.sort((a, b) => {
+        if (a.name < b.name) {
+            return -1;
+        }
+        return 1;
+    })
+
     cachedRecords = records;
     return records;
 };
