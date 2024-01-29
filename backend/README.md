@@ -103,27 +103,31 @@ cd backend
 docker-compose up -d
 ```
 
-#### Using pocketbase binary
+#### Using golang
 
-You can download the latest release [here](https://github.com/pocketbase/pocketbase/releases/tag/v0.20.7)
+3. Run the goland main file
 
-Example for linux:
+```sh
+go run . serve
+```
+
+#### Using Devbox
+
+3. Run the devbox script
+
+```sh
+devbox run main
+```
+
+## Configuration
+
+To configure the backend, you need to apply the migrations using the following command:
 
 ```sh
 wget  https://github.com/pocketbase/pocketbase/releases/download/v0.20.7/pocketbase_0.20.7_linux_amd64.zip && \
 unzip pocketbase_0.20.7_linux_amd64.zip && \
 chmod +x pocketbase
 ```
-
-3. Run the pocketbase binary
-
-```sh
-./pocketbase
-```
-
-## Configuration
-
-To configure the backend, you need to apply the migrations using the following command:
 
 ```sh
 ./pocektbase migrate
@@ -144,9 +148,11 @@ panel (http://localhost:8080/_/)
 ## Roadmap
 
 - [x] Add oauth2 support
-- [ ] Pocketbase as a framework
-    - [ ] Return connected users list
-- [ ] User verification
+- [x] Pocketbase as a framework
+    - [x] Return connected users list
+
+
+You can see the [features](docs_phase3/features.md) and [tests](docs_phase3/tests.md) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

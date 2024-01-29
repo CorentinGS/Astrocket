@@ -1,6 +1,6 @@
 {
   "packages": [
-    "go@latest"
+    "go@1.21.5"
   ],
   "env": {
     "GOPATH": "${workspaceRoot}"
@@ -10,7 +10,7 @@
       "export \"GOROOT=$(go env GOROOT)\""
     ],
     "scripts": {
-      "main": "go run main.go"
+      "main": "go run . serve"
     }
   }
 }

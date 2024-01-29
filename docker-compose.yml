@@ -3,7 +3,7 @@ version: "3.8"
 services:
   backend:
     restart: unless-stopped
-    image: ghcr.io/corentings/astrocket/backend:v0.3.0-rc.1
+    image: ghcr.io/corentings/astrocket/backend:v0.3.0
     ports:
       - "8090:8080"
     volumes:
@@ -19,7 +19,7 @@ services:
       start_period: 10s
   frontend:
     restart: unless-stopped
-    image: ghcr.io/corentings/astrocket/frontend:v0.2.1
+    image: ghcr.io/corentings/astrocket/frontend:v0.3.0
     ports:
       - "4321:4321"
     networks:
