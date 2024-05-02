@@ -1741,10 +1741,10 @@
   resolved "https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.17.2.tgz"
   integrity sha512-TGGO7v7qOq4CYmSBVEYpI1Y5xDuCEnbVC5Vth8mOsW0gDSzxNrVERPc790IGHsrT2dQSimgMr9Ub3Y1Jci5/8w==
 
-"@solidjs/router@^0.10.10":
-  version "0.10.10"
-  resolved "https://registry.npmjs.org/@solidjs/router/-/router-0.10.10.tgz"
-  integrity sha512-nGl7gMgsojuaupI5MAK2cFtkndmWWSAPhill/8La3IjujY3vMBamcQFymBsA2ejzxEYJjkOlEQHYgp2jNFkwuQ==
+"@solidjs/router@^0.13.0":
+  version "0.13.3"
+  resolved "https://registry.npmjs.org/@solidjs/router/-/router-0.13.3.tgz"
+  integrity sha512-p8zznlvnN3KySMXqT8irhubgDNTETNa/guaGHU/cZl7kuiPO3PmkWNYfoNCygtEpoxLmLpf62/ZKeyhFdZexsw==
 
 "@surma/rollup-plugin-off-main-thread@^2.2.3":
   version "2.2.3"
