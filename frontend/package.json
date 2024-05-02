@@ -31,10 +31,10 @@
     "astro-compress": "^2.2.8",
     "astro-compressor": "^0.4.1",
     "astro-critters": "^2.0.11",
-    "astro-font": "^0.0.77",
+    "astro-font": "^0.0.80",
     "astro-iconify": "^1.2.0",
     "daisyui": "^4.6.1",
-    "nanostores": "^0.9.5",
+    "nanostores": "^0.10.0",
     "pocketbase": "^0.21.0",
     "remark-gemoji": "^8.0.0",
     "remark-gfm": "^4.0.0",
@@ -46,7 +46,7 @@
     "solid-textarea-autosize": "^0.0.5",
     "tailwindcss": "^3.4.1",
     "twemoji": "^14.0.2",
-    "vite": "5.0.13"
+    "vite": "5.2.10"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.7",
@@ -59,7 +59,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite-imagetools": "^6.2.7",
+      "vite-imagetools": "^7.0.0",
       "sharp": "^0.33.0"
     }
   }
