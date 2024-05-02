@@ -1611,10 +1611,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.9.6.tgz#2c1fb69e02a3f1506f52698cfdc3a8b6386df9a6"
   integrity sha512-jqzNLhNDvIZOrt69Ce4UjGRpXJBzhUBzawMwnaDAwyHriki3XollsewxWzOzz+4yOFDkuJHtTsZFwMxhYJWmLQ==
 
-"@solidjs/router@^0.10.10":
-  version "0.10.10"
-  resolved "https://registry.npmjs.org/@solidjs/router/-/router-0.10.10.tgz"
-  integrity sha512-nGl7gMgsojuaupI5MAK2cFtkndmWWSAPhill/8La3IjujY3vMBamcQFymBsA2ejzxEYJjkOlEQHYgp2jNFkwuQ==
+"@solidjs/router@^0.13.0":
+  version "0.13.3"
+  resolved "https://registry.npmjs.org/@solidjs/router/-/router-0.13.3.tgz"
+  integrity sha512-p8zznlvnN3KySMXqT8irhubgDNTETNa/guaGHU/cZl7kuiPO3PmkWNYfoNCygtEpoxLmLpf62/ZKeyhFdZexsw==
 
 "@surma/rollup-plugin-off-main-thread@^2.2.3":
   version "2.2.3"
