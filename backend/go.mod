@@ -1,6 +1,6 @@
 module corentings.dev/astrocket
 
-go 1.21
+go 1.22.0
 
 require (
 	github.com/labstack/echo/v5 v5.0.0-20230722203903-ec5b858dab61
