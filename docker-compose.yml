@@ -19,7 +19,7 @@ services:
       start_period: 10s
   frontend:
     restart: unless-stopped
-    image: ghcr.io/corentings/astrocket/frontend:v0.3.0
+    image: ghcr.io/corentings/astrocket/frontend:v0.3.2
     ports:
       - "4321:4321"
     networks:
