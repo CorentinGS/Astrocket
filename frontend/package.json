@@ -19,7 +19,7 @@
     "@astrojs/solid-js": "^4.0.1",
     "@astrojs/tailwind": "5.1.0",
     "@emoji-mart/data": "^1.1.2",
-    "@iconify-icon/solid": "^1.0.5",
+    "@iconify-icon/solid": "^2.0.0",
     "@nanostores/solid": "^0.4.2",
     "@solidjs/router": "^0.13.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
