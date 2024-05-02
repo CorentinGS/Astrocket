@@ -5781,10 +5781,10 @@ nanoid@^3.3.7:
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
 
-nanostores@^0.9.5:
-  version "0.9.5"
-  resolved "https://registry.npmjs.org/nanostores/-/nanostores-0.9.5.tgz"
-  integrity sha512-Z+p+g8E7yzaWwOe5gEUB2Ox0rCEeXWYIZWmYvw/ajNYX8DlXdMvMDj8DWfM/subqPAcsf8l8Td4iAwO1DeIIRQ==
+nanostores@^0.10.0:
+  version "0.10.3"
+  resolved "https://registry.npmjs.org/nanostores/-/nanostores-0.10.3.tgz"
+  integrity sha512-Nii8O1XqmawqSCf9o2aWqVxhKRN01+iue9/VEd1TiJCr9VT5XxgPFbF1Edl1XN6pwJcZRsl8Ki+z01yb/T/C2g==
 
 napi-build-utils@^1.0.1:
   version "1.0.2"
