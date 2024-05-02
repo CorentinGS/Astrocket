@@ -7217,10 +7217,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-solid-emoji-picker@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/solid-emoji-picker/-/solid-emoji-picker-0.2.1.tgz"
-  integrity sha512-5V0Ji7rTVJBHrQw34+5Q07Gmde1w3B4WgfeKqzs7o/aabwoaTFrTFiDI+crZLvw5DzLhqKvsXBo2QbIC9Pc/ag==
+solid-emoji-picker@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/solid-emoji-picker/-/solid-emoji-picker-0.3.0.tgz"
+  integrity sha512-wUntdHCfI9wNlRFu9mMUxUT/BkhR1RRmkfbPjPeNWXqDKqQIiVjQ3GzVkaU9KY3GrYuQRyQDGuf88f0FFGK2lw==
 
 solid-js@^1.8.12:
   version "1.8.17"
