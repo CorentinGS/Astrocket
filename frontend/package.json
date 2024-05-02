@@ -59,7 +59,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite-imagetools": "^6.2.7",
+      "vite-imagetools": "^7.0.0",
       "sharp": "^0.33.0"
     }
   }
