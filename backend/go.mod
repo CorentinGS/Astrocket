@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/labstack/echo/v5 88c379ff7727
 	github.com/stretchr/testify v1.9.0
-	github.com/pocketbase/pocketbase v0.22.10
+	github.com/pocketbase/pocketbase v0.22.12
 )
 
 require (
